@@ -633,7 +633,7 @@ class LeaveController extends Controller
 
     public function leavecount()
     {
-        $departments = Department::where('status', 'active')->get();
+        $departments = Department::where('status', 'active')->orderBy("name","asc")->get();
         return view(
             'pages.leave.leavecount',
             compact(

@@ -821,7 +821,7 @@ class TaskController extends Controller
 
     public function utilization()
     {
-        $departments = Department::where('status', 'active')->get();
+        $departments = Department::where('status', 'active')->orderBy("name","asc")->get();
         $employees=Employee::where("status","1")->orderBy('name')->get();
         $projects = Project::where("status","Active")
         ->where(function ($query) {

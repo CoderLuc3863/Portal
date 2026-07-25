@@ -24,8 +24,8 @@ class AttendanceController extends Controller
     public function capture()
     {
         $jobTypes = JobType::where('status', 'active')->get();
-        $departments = Department::where('status', 'active')->get();
-        $designations = Designation::where('status', 'active')->get();
+        $departments = Department::where('status', 'active')->orderBy("name","asc")->get();
+        $designations = Designation::where('status', 'active')->orderBy("name","asc")->get();
 
         return view('pages.attendance.capture', compact(
             'jobTypes',
@@ -272,8 +272,8 @@ class AttendanceController extends Controller
     public function tracking()
     {
         $jobTypes = JobType::where('status', 'active')->get();
-        $departments = Department::where('status', 'active')->get();
-        $designations = Designation::where('status', 'active')->get();
+        $departments = Department::where('status', 'active')->orderBy("name","asc")->get();
+        $designations = Designation::where('status', 'active')->orderBy("name","asc")->get();
 
         return view('pages.attendance.tracking', compact(
             'jobTypes',
@@ -462,8 +462,8 @@ class AttendanceController extends Controller
     public function regularization()
     {
         $jobTypes = JobType::where('status', 'active')->get();
-        $departments = Department::where('status', 'active')->get();
-        $designations = Designation::where('status', 'active')->get();
+        $departments = Department::where('status', 'active')->orderBy("name","asc")->get();
+        $designations = Designation::where('status', 'active')->orderBy("name","asc")->get();
 
         return view('pages.attendance.regularization', compact(
             'jobTypes',

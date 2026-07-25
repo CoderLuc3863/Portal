@@ -17,7 +17,7 @@ class AssetRequestController extends Controller
 {
     public function requests()
     {
-        $departments = Department::where('status', 'active')->get();
+        $departments = Department::where('status', 'active')->orderBy("name","asc")->get();
         return view('pages.assets.request', compact('departments'));
     }
     public function requestslist(Request $request)
@@ -217,7 +217,7 @@ class AssetRequestController extends Controller
     }
     public function assigned()
     {
-        $departments = Department::where('status', 'active')->get();
+        $departments = Department::where('status', 'active')->orderBy("name","asc")->get();
         return view('pages.assets.assigned', compact('departments'));
     }
     public function assignedlist(Request $request)

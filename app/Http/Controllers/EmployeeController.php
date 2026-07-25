@@ -31,9 +31,9 @@ class EmployeeController extends Controller
     public function index()
     {
         $jobTypes = JobType::where('status', 'active')->get();
-        $departments = Department::where('status', 'active')->get();
-        $designations = Designation::where('status', 'active')->get();
-        $managers = Employee::where('status', '1')->get();
+        $departments = Department::where('status', 'active')->orderBy("name","asc")->get();
+        $designations = Designation::where('status', 'active')->orderBy("name","asc")->get();
+        $managers = Employee::where('status', '1')->orderBy("name","asc")->get();
 
         return view(
             'pages.employee-list',
@@ -211,9 +211,9 @@ class EmployeeController extends Controller
     public function employeeDirectory()
     {
         $jobTypes = JobType::where('status', 'active')->get();
-        $departments = Department::where('status', 'active')->get();
-        $designations = Designation::where('status', 'active')->get();
-        $managers = Employee::where('status', '1')->get();
+        $departments = Department::where('status', 'active')->orderBy("name","asc")->get();
+        $designations = Designation::where('status', 'active')->orderBy("name","asc")->get();
+        $managers = Employee::where('status', '1')->orderBy("name","asc")->get();
         return view(
             'pages.onboard-list',
             compact(
@@ -944,7 +944,7 @@ class EmployeeController extends Controller
             '#ff4081', // Rose
         ];
 
-        $departments = Department::where('status', 'active')
+        $departments = Department::where('status', 'active')->orderBy("name","asc")
             ->withCount([
                 'employees as employee_count' => function ($q) {
                     $q->where('status', 1);

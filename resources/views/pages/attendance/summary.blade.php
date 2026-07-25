@@ -20,7 +20,7 @@
 
             <div class="row">
 
-                <div class="col-md-2">
+                {{-- <div class="col-md-2">
                     <label>Year</label>
                     <select class="form-select" id="year">
                         <option value="">Select Year</option>
@@ -46,7 +46,7 @@
                         @endforeach
 
                     </select>
-                </div>
+                </div> --}}
 
                 <div class="col-md-2">
                     <label>Date</label>
@@ -269,8 +269,8 @@ $(function () {
 
             data: function (d) {
 
-                d.year  = $('#year').val();
-                d.month = $('#month').val();
+                // d.year  = $('#year').val();
+                // d.month = $('#month').val();
                 d.date  = $('#date').val();
 
             }
@@ -344,8 +344,8 @@ $(function () {
 
     $('#exportBtn').click(function () {
 
-            let year  = $('#year').val();
-            let month = $('#month').val();
+            // let year  = $('#year').val();
+            // let month = $('#month').val();
             let date  = $('#date').val();
 
             let url =

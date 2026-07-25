@@ -13,6 +13,7 @@ use App\Models\EvaluationSchedule;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\EvaluationReportExport;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
@@ -179,7 +180,7 @@ class EvaluationController extends Controller
     }
     public function scheduling()
     {
-        $departments = Department::where('status', 'active')->get();
+        $departments = Department::where('status', 'active')->orderBy("name","asc")->get();
         $evaluation_forms = EvaluationForm::where('status', 'active')->get();
 
         return view(
@@ -392,7 +393,7 @@ class EvaluationController extends Controller
     }
     public function report()
     {
-        $departments = Department::where('status', 'active')->get();
+        $departments = Department::where('status', 'active')->orderBy("name","asc")->get();
         $evaluation_forms = EvaluationForm::where('status', 'active')->get();
 
         return view(
@@ -408,7 +409,12 @@ class EvaluationController extends Controller
         $query = EvaluationAssign::with([
             'employee.department',
             'form'
-        ]);
+        ])->when(
+            !in_array(Auth::user()->department_id, [1, 2]),
+            function ($q) {
+                $q->where('employee_id', Auth::id());
+            }
+        );
 
         if ($request->year) {
             $query->where('year', $request->year);
@@ -524,23 +530,53 @@ class EvaluationController extends Controller
             })
 
             ->addColumn('action', function ($row) {
-                if (!empty($row->submitted_date)) {
+                if(in_array(Auth::user()->department_id, [1, 2]))
+                {
+                    if (empty($row->submitted_date) && $row->employee_id!=Auth::user()->id) {
+                        return '    
+                        <button
+                                class="btn btn-sm btn-secondary" disabled
+                                data-id="' . $row->id . '">
+                                View
+                            </button>
+                        ';
+                    } elseif(empty($row->submitted_date) && $row->employee_id==Auth::user()->id){
+                        return '
+                        <button
+                            class="btn btn-sm btn-primary viewBtnForm"
+                            data-id="' . $row->id . '">
+                            View
+                        </button>
+                        ';
+                    } else{
+                        return '
+                        <button
+                            class="btn btn-sm btn-primary viewBtn"
+                            data-id="' . $row->id . '">
+                            View
+                        </button>
+                        ';
+                    }
+                }else{
+                    if ($row->review=="Pending") {
+                     return '
+                        <button
+                            class="btn btn-sm btn-primary viewBtnForm"
+                            data-id="' . $row->id . '">
+                            View
+                        </button>
+                    ';
+                    }
+                    else{
+                         return '    
+                        <button
+                                class="btn btn-sm btn-secondary" disabled
+                                data-id="' . $row->id . '">
+                                View
+                            </button>
+                        ';
 
-                    return '
-                    <button
-                        class="btn btn-sm btn-primary viewBtn"
-                        data-id="' . $row->id . '">
-                        View
-                    </button>
-                ';
-                } else {
-                    return '
-                    <button
-                        class="btn btn-sm btn-secondary" disabled
-                        data-id="' . $row->id . '">
-                        View
-                    </button>
-                ';
+                    }
                 }
             })
             ->filter(function ($query) use ($request) {
@@ -642,9 +678,43 @@ class EvaluationController extends Controller
         ]);
     }
 
+    public function saveEmpEvaluationReview(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:evaluation_assign,id',
+            'employeeMarks' => 'required|array',
+            'justifications' => 'required|array'
+        ]);
+
+        $evaluation = EvaluationAssign::findOrFail(
+            $request->id
+        );
+
+        $evaluation->marks =
+            $request->employeeMarks;
+
+        $evaluation->justifications =
+            $request->justifications;
+
+
+        $evaluation->submitted_date =
+            Carbon::now();
+
+        $evaluation->save();
+
+        return response()->json([
+
+            'status' => true,
+
+            'message' =>
+            'Evaluation Submitted saved successfully.'
+
+        ]);
+    }
+
     public function pip()
     {
-        $departments = Department::where('status', 1)->get();
+        $departments = Department::where('status', 1)->orderBy("name","asc")->get();
 
         return view('pages.evaluation.pip', compact('departments'));
     }

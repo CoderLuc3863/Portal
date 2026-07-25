@@ -18,8 +18,8 @@ class EmployeeOffboardController extends Controller
     public function index()
     {
         $jobTypes = JobType::where('status', 'active')->get();
-        $departments = Department::where('status', 'active')->get();
-        $designations = Designation::where('status', 'active')->get();
+        $departments = Department::where('status', 'active')->orderBy("name","asc")->get();
+        $designations = Designation::where('status', 'active')->orderBy("name","asc")->get();
 
         return view(
             'pages.offboard.index',

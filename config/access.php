@@ -16,6 +16,11 @@ $commonMenus = [
     'project-management',
     'tasks-allocation',
     'my-tasks',
+
+    'performance-tracking',
+    'evaluation-report',
+    'learning-developing',
+    'training-assign',
     
 
 ];

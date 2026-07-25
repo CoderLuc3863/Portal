@@ -6,17 +6,19 @@
         </div>
 
         <div>
+            @if(in_array(Auth::user()->department_id, [1, 2]))
             <button
                 class="btn btn-primary"
                 data-bs-toggle="modal"
                 data-bs-target="#assignTraineeModal">
                 <i class="bi bi-plus-lg me-1"></i> Assign Trainee
             </button>
+            @endif
         </div>
 
     </div>
    
-
+    @if(in_array(Auth::user()->department_id, [1, 2]))
     <!-- Filter -->
     <div class="row mb-4">
         <div class="col-md-3">
@@ -43,7 +45,7 @@
             </button>
         </div>
     </div>
-
+    @endif
    
 
     <!-- Table -->
@@ -71,7 +73,7 @@
 </div>
 
 <div class="modal fade" id="assignTraineeModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-custom">
         <div class="modal-content">
 
             
@@ -181,7 +183,7 @@
 
 <div class="modal fade" id="viewModal">
 
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
 
         <div class="modal-content">
 
@@ -223,6 +225,7 @@
                     <input type="text" id="review_phase" class="form-control" readonly>
                 </div>
 
+
                 <div class="mb-2">
                     <label>HR Status</label>
                     <select id="review_hr_status" class="form-select">
@@ -240,6 +243,44 @@
 
             <div class="modal-footer">
                 <button class="btn btn-primary" id="savePhaseReview">Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="emp_phaseReviewModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5>Employee Review</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="emp_review_row_id">
+
+                <div class="mb-2">
+                    <label>Phase</label>
+                    <input type="text" id="emp_review_phase" class="form-control" readonly>
+                </div>
+
+
+                <div class="mb-2">
+                    <label>Status</label>
+                    <select id="emp_review_status" class="form-select">
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="emp_savePhaseReview">Save</button>
             </div>
 
         </div>
@@ -280,14 +321,56 @@
     });
 
 });
-    $(document).on('click', '.reviewPhaseBtn', function () {
 
+ $('#emp_savePhaseReview').click(function () {
+
+    let id = $('#emp_review_row_id').val();
+
+    $.ajax({
+        url: '/training/phase-emp-review/' + id,
+        type: 'POST',
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            emp_status: $('#emp_review_status').val(),
+        },
+        success: function (res) {
+
+            $('#emp_phaseReviewModal').modal('hide');
+            $('#emp_reviewModal').modal('hide');
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated',
+                    text: res.message
+                }).then(() => {
+
+                    // reopen view modal again
+                    $('.viewBtn[data-id="'+currentViewId+'"]').trigger('click');
+                });
+
+            $('#assignTable').DataTable().ajax.reload();
+        }
+    });
+
+});
+    $(document).on('click', '.reviewPhaseBtn', function () {
+        console.log()
     $('#review_row_id').val($(this).data('id'));
     $('#review_phase').val($(this).data('phase'));
+    $('#review_topics').val($(this).data('phase'));
     $('#review_hr_status').val($(this).data('hr_status'));
     $('#review_hr_remark').val($(this).data('hr_remark'));
 
     $('#phaseReviewModal').modal('show');
+});
+    $(document).on('click', '.emp_reviewPhaseBtn', function () {
+        console.log()
+    $('#emp_review_row_id').val($(this).data('id'));
+    $('#emp_review_phase').val($(this).data('phase'));
+    $('#emp_review_topics').val($(this).data('phase'));
+    $('#emp_review_status').val($(this).data('hr_status'));
+
+    $('#emp_phaseReviewModal').modal('show');
 });
 var currentViewId = null;
 $(document).on('click', '.viewBtn', function () {
@@ -297,7 +380,7 @@ $(document).on('click', '.viewBtn', function () {
     let id = currentViewId;
 
     $.get('/training/view/' + id, function (res) {
-
+        console.log(res);
         let html = '';
 
         let trainee = '';
@@ -316,6 +399,11 @@ $(document).on('click', '.viewBtn', function () {
             html += `
                 <tr>
                     <td>${row.phase_name ?? '-'}</td>
+                    <td>${
+                        row.topic_details?.topics?.length
+                            ? row.topic_details.topics.map(topic => "* "+topic.topic_name).join('<br>')
+                            : '-'
+                    }</td>
                     <td>
                         <span class="badge ${
                             row.status === 'completed'
@@ -336,11 +424,13 @@ $(document).on('click', '.viewBtn', function () {
                     </td>
                     <td>${row.hr_remark ?? '-'}</td>
                     <td>
+                       @if(in_array(Auth::user()->department_id, [1, 2]))
                         ${
                             row.status === 'completed'
                             ? `
                                 <button class="btn btn-sm btn-warning reviewPhaseBtn"
                                     data-id="${row.id}"
+                                    
                                     data-phase="${row.phase_name}"
                                     data-hr_status="${row.hr_status}"
                                     data-hr_remark="${row.hr_remark ?? ''}">
@@ -351,7 +441,26 @@ $(document).on('click', '.viewBtn', function () {
                                 <span class="text-muted">Not Allowed</span>
                             `
                         }
-                    </td>
+                        @else
+                        ${
+                            row.hr_status === 'pending'
+                            ? `
+                                <button class="btn btn-sm btn-warning emp_reviewPhaseBtn"
+                                    data-id="${row.id}"
+                                    
+                                    data-phase="${row.phase_name}"
+                                    data-hr_status="${row.hr_status}"
+                                    data-hr_remark="${row.hr_remark ?? ''}">
+                                    Review
+                                </button>
+                            `
+                            : `
+                                <span class="text-muted">Not Allowed</span>
+                            `
+                        }
+
+                        @endif   
+                        </td>
                 </tr>
             `;
         });
@@ -382,6 +491,7 @@ $(document).on('click', '.viewBtn', function () {
                 <thead class="table-light">
                     <tr>
                         <th>Phase Name</th>
+                        <th>Topics</th>
                         <th>Status</th>
                         <th>HR Status</th>
                         <th>HR Remark</th>

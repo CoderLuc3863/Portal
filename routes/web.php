@@ -202,6 +202,7 @@ Route::get('/evaluation-report-list',[EvaluationController::class, 'evaluationRe
 Route::get('/evaluation-report-view/{id}',[EvaluationController::class, 'evaluationReportView'])->name('evaluation.report.view');
 Route::get('/evaluation-report-export',[EvaluationController::class,'exportReport'])->name('evaluation.report.export');
 Route::post('/evaluation-report-review',[EvaluationController::class, 'saveEvaluationReview'])->name('evaluation.report.review');
+Route::post('/evaluation-report-emp-review',[EvaluationController::class, 'saveEmpEvaluationReview'])->name('evaluation.report.empreview');
 Route::get('/evaluation-pip',[EvaluationController::class,'pip'])->name('evaluation.pip');
 Route::get('/pip-list', [EvaluationController::class, 'pipList'])->name('pip.list');
 
@@ -240,6 +241,7 @@ Route::post('/training/assign', [TrainingPhaseController::class, 'assign'])->nam
 Route::get('/training/assign-list', [TrainingPhaseController::class, 'assignList'])->name('training.assign.list');
 Route::get('/training/view/{id}',[TrainingPhaseController::class,'viewAssignment'])->name('training.assign.view');
 Route::post('/training/phase-hr-review/{id}', [TrainingPhaseController::class, 'phaseHrReview']);
+Route::post('/training/phase-emp-review/{id}', [TrainingPhaseController::class, 'phaseEmpReview']);
 Route::delete('/training/delete/{id}',[TrainingPhaseController::class,'deleteAssignment'])->name('training.assign.delete');
 Route::get('/training-report',[TrainingPhaseController::class, 'report'])->name('training.report.index');
 
