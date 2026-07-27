@@ -54,7 +54,15 @@ Route::get('/employees',[EmployeeController::class, 'index'])->name('employees.i
 Route::get('/employee-list',[EmployeeController::class, 'employeeList'])->name('employees.list');
 Route::get('/employees/export',[EmployeeController::class, 'exportEmployees'])->name('employees.export');
 Route::post('/employee/reset-password/{id}', [EmployeeController::class, 'resetPassword'])->name('employee.resetPassword');
-Route::get('/employee-directory',[EmployeeController::class, 'employeeDirectory'])->name('employeedirectory.index');
+Route::post('/employees/resign', [EmployeeController::class, 'resignEmployee'])->name('employees.resign');
+
+Route::get('/employee/exit-form', [EmployeeController::class, 'exitForm'])
+        ->name('employee.exitform');
+
+    Route::post('/employee/exit-form', [EmployeeController::class, 'storeExitForm'])
+        ->name('employee.exitform.store');
+
+    Route::get('/employee-directory',[EmployeeController::class, 'employeeDirectory'])->name('employeedirectory.index');
 Route::get('/employeeOnboard-list',[EmployeeController::class, 'employeeOnboardList'])->name('onboard.list');
 Route::get('/onboard/export', [EmployeeController::class, 'onboardExport'])->name('onboard.export');
 Route::get('/employee/details/{id}', [EmployeeController::class, 'employeeDetails'])->name('employee.details');
@@ -100,7 +108,7 @@ Route::prefix('attendance')->group(function () {
     Route::get('/tracking', [AttendanceController::class, 'tracking'])->name('attendance.tracking');
     Route::get('attendance-tracking-list',[AttendanceController::class, 'trackingList'])->name('attendance.tracking.list');
     Route::get('attendance-tracking-export',[AttendanceController::class, 'trackingExport'])->name('attendance.tracking.export');
-    
+    Route::delete('/regularization/{id}', [AttendanceController::class, 'deleteRegularization'])->name('regularization.delete');
     Route::get('/regularization', [AttendanceController::class, 'regularization'])
     ->name('attendance.regularization');
     Route::post('/regularization/store',

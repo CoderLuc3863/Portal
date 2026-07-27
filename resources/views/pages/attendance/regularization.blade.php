@@ -707,4 +707,60 @@ $('#approveForm').submit(function(e){
     });
 
 });
+$(document).on('click', '.deleteBtn', function () {
+
+    let id = $(this).data('id');
+
+    Swal.fire({
+        title: 'Delete Request?',
+        text: 'Are you sure you want to delete this regularization request?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, Delete'
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+
+            $.ajax({
+
+                url: 'attendance/regularization/' + id,
+                type: 'DELETE',
+
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+
+                success: function (res) {
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted',
+                        text: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    $('#regularizationTable').DataTable().ajax.reload(null, false);
+
+                },
+
+                error: function (xhr) {
+
+                    Swal.fire(
+                        'Error',
+                        xhr.responseJSON.message,
+                        'error'
+                    );
+
+                }
+
+            });
+
+        }
+
+    });
+
+});
 </script>

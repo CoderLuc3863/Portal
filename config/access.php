@@ -21,6 +21,7 @@ $commonMenus = [
     'evaluation-report',
     'learning-developing',
     'training-assign',
+    'exitform',
     
 
 ];
@@ -66,6 +67,7 @@ $adminMenus = array_merge($commonMenus, [
     'learning-developing',
     'training-phase',
     'training-assign',
+    'exitform',
 
 ]);
 return [

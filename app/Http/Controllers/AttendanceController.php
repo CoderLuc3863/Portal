@@ -598,25 +598,35 @@ class AttendanceController extends Controller
                         . $row->status .
                         '</span>';
                 }
-                if(in_array(Auth::user()->department_id, [1, 2]))
-                {
+                if ($row->status == 'Pending') {
 
-                return '
-                    <button
-                        class="btn btn-success btn-sm approveBtn"
-                        data-id="' . $row->id . '">
-                        Approve
-                    </button>
+                    if (in_array(Auth::user()->department_id, [1, 2])) {
 
-                    <button
-                        class="btn btn-danger btn-sm rejectBtn"
-                        data-id="' . $row->id . '">
-                        Reject
-                    </button>';
-                }else{
-                    return '<span class="badge bg-warning">'
-                        . $row->status .
-                        '</span>';
+                        return '
+                            <button class="btn btn-success btn-sm approveBtn"
+                                data-id="'.$row->id.'">
+                                Approve
+                            </button>
+
+                            <button class="btn btn-danger btn-sm rejectBtn"
+                                data-id="'.$row->id.'">
+                                Reject
+                            </button>
+
+                            <button class="btn btn-danger btn-sm deleteBtn"
+                                data-id="'.$row->id.'">
+                                <i class="bi bi-trash"></i>
+                            </button>';
+                    } else {
+
+                        return '
+                            <span class="badge bg-warning">Pending</span>
+
+                            <button class="btn btn-danger btn-sm deleteBtn ms-1"
+                                data-id="'.$row->id.'">
+                                <i class="bi bi-trash"></i>
+                            </button>';
+                    }
                 }
             })
 
@@ -657,6 +667,35 @@ class AttendanceController extends Controller
             ->make(true);
     }
 
+    public function deleteRegularization($id)
+    {
+        $request = RegularizationRequest::findOrFail($id);
+
+        // Allow deletion only while pending
+        if ($request->status != 'Pending') {
+            return response()->json([
+                'status' => false,
+                'message' => 'Only pending requests can be deleted.'
+            ], 422);
+        }
+
+        // Employees can delete only their own request
+        if (!in_array(Auth::user()->department_id, [1, 2]) &&
+            $request->employee_id != Auth::id()) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized action.'
+            ], 403);
+        }
+
+        $request->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Regularization request deleted successfully.'
+        ]);
+    }
     public function storeRegularization(Request $request)
     {
         $request->validate([

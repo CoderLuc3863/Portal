@@ -82,7 +82,7 @@
                 </div>
 
                 <div class="text-end mb-3">
-                    <a href="#">Forgot password?</a>
+                    {{-- <a href="#">Forgot password?</a> --}}
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100">

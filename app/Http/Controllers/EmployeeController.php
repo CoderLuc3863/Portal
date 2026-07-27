@@ -14,6 +14,7 @@ use App\Models\Designation;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\TaskUpdate;
+use App\Models\EmployeeOffboard;
 use App\Exports\EmployeeExport;
 use App\Exports\OnboardEmployeeExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -124,7 +125,12 @@ class EmployeeController extends Controller
                         return '<span class="badge text-bg-success">
                                     Active
                                 </span>';
-                    } else {
+                    } elseif($row->status == 2){
+                        return '<span class="badge text-bg-warning">
+                                    Resigned
+                                </span>';
+                    }
+                    else{
 
                         return '<span class="badge text-bg-danger">
                         In Active
@@ -147,35 +153,41 @@ class EmployeeController extends Controller
 
                     return '
 
-        <div class="d-flex gap-1">
+                        <div class="d-flex gap-1">
 
-            <button type="button"
-                    class="btn btn-sm btn-primary"
-                    onclick="viewEmployee('.$row->id.')"  title="View">
+                            <button type="button"
+                                    class="btn btn-sm btn-primary"
+                                    onclick="viewEmployee('.$row->id.')"  title="View">
 
-                <i class="bi bi-eye"></i> 
+                                <i class="bi bi-eye"></i> 
 
-            </button>
+                            </button>
 
-            <button type="button"
-                    class="btn btn-sm btn-warning text-white"
-                    onclick="editEmployee('.$row->id.')" title="Edit">
+                            <button type="button"
+                                    class="btn btn-sm btn-success text-white"
+                                    onclick="editEmployee('.$row->id.')" title="Edit">
 
-                <i class="bi bi-pencil-square"></i> 
+                                <i class="bi bi-pencil-square"></i> 
 
-            </button>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-sm btn-danger"
+                                    onclick="resignEmployee('.$row->id.')"  title="Resign">
 
-            <button type="button"
-                    class="btn btn-sm btn-danger"
-                    onclick="resetPassword('.$row->id.')" title="Reset Password">
+                                <i class="bi bi-person-x"></i> 
 
-                <i class="bi bi-key"></i>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-sm btn-warning"
+                                    onclick="resetPassword('.$row->id.')" title="Reset Password">
 
-            </button>
+                                <i class="bi bi-key"></i>
 
-        </div>
+                            </button>
 
-        ';
+                        </div>
+
+                        ';
                 })
 
                 ->rawColumns([
@@ -188,6 +200,28 @@ class EmployeeController extends Controller
         }
     }
     
+    public function resignEmployee(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:employees,id'
+        ]);
+
+        $employee = Employee::findOrFail($request->id);
+
+        $employee->status = 2;
+        $employee->save();
+        EmployeeOffboard::create([
+            'employee_id'      => $employee->id,
+            // 'resignation_date' => now()->toDateString(),
+            'status'           => 'pending', // or 0 if integer
+            'created_by'       => auth()->id(),
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Employee resigned successfully.'
+        ]);
+    }
     public function exportEmployees(Request $request)
     {
         return Excel::download(
@@ -746,6 +780,17 @@ class EmployeeController extends Controller
                 'work_location'      => $request->work_location,
                 'status'      => $request->status,
             ]);
+            if ($request->status != 2) {
+                EmployeeOffboard::where('employee_id', $employee->id)->delete();
+            }else{
+                EmployeeOffboard::create([
+                    'employee_id'      => $employee->id,
+                    // 'resignation_date' => now()->toDateString(),
+                    'status'           => 'pending', // or 0 if integer
+                    'created_by'       => auth()->id(),
+                ]);
+            }
+
 
             return response()->json([
                 'status' => true,
@@ -1181,5 +1226,110 @@ class EmployeeController extends Controller
 
         return response()->json($response);
     }
+    public function exitForm()
+    {
+       $employee = Employee::findOrFail(auth()->id());
+        return view('pages.exitform',compact("employee"));
+    }
     
+    public function storeExitForm(Request $request)
+    {
+        $offboard = EmployeeOffboard::where('employee_id', auth()->id())->firstOrFail();
+
+        // Check if already submitted
+        if (
+            !empty($offboard->leaving_type) ||
+            !empty($offboard->reason) ||
+            !empty($offboard->feedback) ||
+            !empty($offboard->signature)
+        ) {
+            return response()->json([
+                'status' => false,
+                'submitted' => true,
+                'message' => 'You have already submitted the Exit Form.'
+            ], 422);
+        }
+        $request->validate([
+            'separation_type' => 'required',
+            'reason' => 'required',
+            'liked' => 'required',
+            'improve' => 'required',
+            'experience' => 'required',
+            'recommend' => 'required',
+            'handover' => 'required',
+            'signature' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        DB::beginTransaction();
+
+        try{
+
+            // $offboard = EmployeeOffboard::where('employee_id',auth()->id())->firstOrFail();
+
+            $signature = $offboard->signature;
+
+            if ($request->hasFile('signature')) {
+
+                $employee = auth()->user();
+
+                $file = $request->file('signature');
+
+                $filename = $employee->emp_id . '_' . date('Ymd_His') . '.' . $file->getClientOriginalExtension();
+
+                $signature = $file->storeAs(
+                    'employees/signature',
+                    $filename,
+                    'public'
+                );
+            }
+
+            $offboard->update([
+
+                'leaving_date' => now()->toDateString(),
+
+                'leaving_type' => $request->separation_type,
+
+                'reason' => $request->reason,
+
+                'additional_comments' => $request->comments,
+
+                'feedback' => $request->liked,
+
+                'improvements' => $request->improve,
+
+                'experience' => $request->experience,
+
+                'recommend_company' => $request->recommend,
+
+                'suggestions' => $request->suggestions,
+
+                'knowledge_transfer' => $request->handover,
+
+                'handover_details' => $request->handover_details,
+
+                'signature' => $signature,
+
+                'emp_process' => "completed",
+
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status'=>true,
+                'message'=>'Exit form submitted successfully.'
+            ]);
+
+        }catch(\Exception $e){
+
+            DB::rollBack();
+
+            return response()->json([
+                'status'=>false,
+                'message'=>$e->getMessage()
+            ],500);
+
+        }
+
+    }
 }

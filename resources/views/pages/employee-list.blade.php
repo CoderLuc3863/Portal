@@ -971,6 +971,7 @@
                                             <option value="">Select Status</option>
                                             <option value="1">Active</option>
                                             <option value="0">Inactive</option>
+                                            <option value="2">Resign</option>
 
                                         </select>
 
@@ -2122,5 +2123,58 @@ $('#bankForm').submit(function(e){
 });
 
 });
+function resignEmployee(id)
+{
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to resign this employee from the company?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, Resign',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
 
+        if(result.isConfirmed){
+
+            $.ajax({
+
+                url: "{{ route('employees.resign') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: id
+                },
+
+                success: function(response){
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Resigned!',
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    $('#employeeTable').DataTable().ajax.reload(null,false);
+
+                },
+
+                error: function(xhr){
+
+                    Swal.fire(
+                        'Error!',
+                        xhr.responseJSON?.message ?? 'Something went wrong.',
+                        'error'
+                    );
+
+                }
+
+            });
+
+        }
+
+    });
+}
 </script>

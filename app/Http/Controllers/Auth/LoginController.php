@@ -38,6 +38,7 @@ class LoginController extends Controller
                 'onboard_status' => Auth::user()->onboard_status,
                 'department' => Auth::user()->department,
                 'department_id' => Auth::user()->department_id,
+                'emp_status' => Auth::user()->status,
                 ]);    
                 return redirect()->route('dashboard');
             

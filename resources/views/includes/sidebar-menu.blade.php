@@ -396,6 +396,17 @@ $pages = config('access.page')[session('department_id')] ?? [];
                 </ul>
               </li>
               @endif
+
+              @if(in_array('exitform',$pages) && session("emp_status")==2)
+              <li class="nav-item has-treeview">
+                <a href="javascript:void(0)"
+                  data-page="{{ route('employee.exitform') }}" class="nav-link menu-link">
+                  <i class="bi bi-box-arrow-right"></i>
+                  <p>Exit Form</p>
+                </a>
+              </li>
+              @endif
+                  
             </ul>
             <!--end::Sidebar Menu-->
           </nav>
