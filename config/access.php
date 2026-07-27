@@ -99,6 +99,10 @@ return [
         // Accounts
         10 => $commonMenus,
         //IT
-        11 => $commonMenus,
+        11 => array_merge($commonMenus, [
+            'asset-management',
+            'assets-requests',
+            'assigned-assets',
+        ]),
     ],
 ];
