@@ -13,22 +13,22 @@ return new class extends Migration
     {
         Schema::table('leaves', function (Blueprint $table) {
 
-            $table->decimal('leavecount', 4, 1)
-                ->default(1)
-                ->after('to_date');
+            // $table->decimal('leavecount', 4, 1)
+            //     ->default(1)
+            //     ->after('to_date');
 
-            $table->enum('leavecategory', [
-                'Full Day',
-                'Half Day'
-            ])->default('Full Day')
-            ->after('leavecount');
+            // $table->enum('leavecategory', [
+            //     'Full Day',
+            //     'Half Day'
+            // ])->default('Full Day')
+            // ->after('leavecount');
 
-            $table->enum('leavesession', [
-                'AM',
-                'PM',
-                'NA'
-            ])->default('NA')
-            ->after('leavecategory');
+            // $table->enum('leavesession', [
+            //     'AM',
+            //     'PM',
+            //     'NA'
+            // ])->default('NA')
+            // ->after('leavecategory');
 
         });
     }

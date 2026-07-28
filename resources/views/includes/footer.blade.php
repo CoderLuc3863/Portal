@@ -303,46 +303,32 @@ function viewProEmployee(id)
             $('#pro_bank_ifsc').text(response.ifsc ?? '-');
 
             $('#pro_bank_branch').text(response.branch ?? '-');
+            
+            //education
             $('#pro_educationTableBody').html('');
-
             if (response.educations && response.educations.length > 0) {
-
                 $.each(response.educations, function(index, education){
-
+                    let fileUrl = '/storage/employees/education/' + education.attachment;
                     $('#pro_educationTableBody').append(`
                         <tr>
-
                             <td>${education.qualification ?? '-'}</td>
-
                             <td>${education.university_board ?? '-'}</td>
-
                             <td>${education.passing_year ?? '-'}</td>
-
                             <td>${education.percentage ?? '-'}%</td>
-
-                            <td>
-                                
-            
-                            ${education.attachment ? `<a href="javascript:void(0)"
-                            onclick="viewProAttachment('${education.attachment}')"
+                            <td>${education.attachment ? `<a href="javascript:void(0)"
+                            onclick="viewProAttachment('${fileUrl}')"
                             class="btn btn-sm btn-primary">
-
                                 <i class="bi bi-eye-fill"></i>
-
                                 </a>
                                 <a href="${education.attachment}" download class="btn btn-sm btn-success">
                                     <i class="bi bi-download"></i>
                                 </a>` : '-'}
                             </td>
-
                         </tr>
                     `);
-
                 });
-
             }
             else{
-
                 $('#pro_educationTableBody').html(`
                     <tr>
                         <td colspan="5" class="text-center">
@@ -350,60 +336,43 @@ function viewProEmployee(id)
                         </td>
                     </tr>
                 `);
-
             }
+           
+
+            //experience
             $('#pro_experienceTableBody').html('');
-
             if (response.experiences && response.experiences.length > 0) {
-
-                $.each(response.experiences, function(index, experience) {
-
-                    let attachment = '-';
-
-                    if (experience.attachment) {
-                        attachment = `
-                            <a href="javascript:void(0)"
-                                onclick="viewProAttachment('${experience.attachment}')"
-                                class="btn btn-sm btn-primary"
-                                title="View">
-
-                                    <i class="bi bi-eye-fill"></i>
-
-                                </a>
-
-                            <a href="${experience.attachment}" download title="Download"  class="btn btn-sm btn-success">
-                                <i class="bi bi-download"></i>
-                            </a>
-                        `;
-                    }
-
+                $.each(response.experiences, function(index, experience){
+                    let fileUrl = '/storage/employees/experience/' + experience.attachment;
                     $('#pro_experienceTableBody').append(`
                         <tr>
-
                             <td>${experience.company_name ?? '-'}</td>
-
                             <td>${experience.job_role ?? '-'}</td>
-
-                            <td>${experience.year_of_experience ?? '-'} Year(s)</td>
-
-                            <td>${attachment}</td>
-
+                            <td>${experience.year_of_experience ?? '-'}</td>
+                            <td>${experience.attachment ? `<a href="javascript:void(0)"
+                            onclick="viewProAttachment('${fileUrl}')"
+                            class="btn btn-sm btn-primary">
+                                <i class="bi bi-eye-fill"></i>
+                                </a>
+                                <a href="${experience.attachment}" download class="btn btn-sm btn-success">
+                                    <i class="bi bi-download"></i>
+                                </a>` : '-'}
+                            </td>
                         </tr>
                     `);
-
                 });
-
-            } else {
-
+            }
+            else{
                 $('#pro_experienceTableBody').html(`
                     <tr>
                         <td colspan="4" class="text-center">
-                            No experience details found.
+                            No education details found.
                         </td>
                     </tr>
                 `);
-
             }
+
+
             $('#pro_doc_aadhar').html(
                 documentProCard('Aadhaar Card',response.adhar_card)
             );
@@ -519,16 +488,10 @@ function viewProAttachment(file)
 
 function editProEmployee(id)
 {
-
-    $.ajax({
-        
-
+    $.ajax({        
         url:'/employee/edit/'+id,
-
         type:'GET',
-
         beforeSend:function(){
-
             Swal.fire({
                 title:'Loading...',
                 text:'Fetching employee details',
@@ -537,13 +500,9 @@ function editProEmployee(id)
                     Swal.showLoading();
                 }
             });
-
         },
-
         success:function(emp){
-
             Swal.close();
-
             // Hidden ID
             $('#pro_edit_employee_id').val(emp.id);
             $('#reset_employee_id').val(emp.id);
@@ -585,10 +544,185 @@ function editProEmployee(id)
             $('#pro_view_work_location').text(emp.work_location ?? '-');
             $('#pro_view_status').text(emp.status == 1 ? 'Active' : 'Inactive');
 
-            // Banking
+            //education
+            $('#pro_edit_educationTableBody').html('');
 
+            if (emp.educations && emp.educations.length > 0) {
+
+                $.each(emp.educations, function(index, education){
+                    let fileUrl = '/storage/employees/education/' + education.attachment;
+                    $('#pro_edit_educationTableBody').append(`
+                        <tr data-id="${education.id}">
+
+                            <td>
+                                <input type="text"
+                                    class="form-control qualification"
+                                    value="${education.qualification ?? ''}">
+                            </td>
+
+                            <td>
+                                <input type="text"
+                                    class="form-control university_board"
+                                    value="${education.university_board ?? ''}">
+                            </td>
+
+                            <td>
+                                <input type="number"
+                                    class="form-control passing_year"
+                                    value="${education.passing_year ?? ''}">
+                            </td>
+
+                            <td>
+                                <input type="text"
+                                    class="form-control percentage"
+                                    value="${education.percentage ?? ''}">
+                            </td>
+
+                            <td style="white-space: nowrap;">
+
+                                ${
+                                    education.attachment
+                                    ? `
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-primary"
+                                                onclick="viewProAttachment('${fileUrl}')"
+                                                title="View">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </button>
+
+                                        <a href="${fileUrl}"
+                                        download
+                                        class="btn btn-sm btn-outline-success"
+                                        title="Download">
+                                            <i class="bi bi-download"></i>
+                                        </a>
+                                    `
+                                    : `
+                                        <span class="badge bg-secondary">No File</span>
+                                    `
+                                }
+
+                                <input type="file"
+                                    class="form-control form-control-sm attachment d-inline-block ms-2"
+                                    style="width:180px;"
+                                    accept=".pdf,.jpg,.jpeg,.png">
+
+                            </td>
+
+                            <td>
+                                <button type="button"
+                                        class="btn btn-sm btn-danger removeProfileRow">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+                        `);
+
+                });
+
+            }
+            else{
+
+                $('#pro_edit_educationTableBody').html(`
+                    <tr id="noeducation">
+                        <td colspan="6" class="text-center" >
+                            No education details found.
+                        </td>
+                    </tr>
+                `);
+
+            }
+
+             //experience
+            $('#pro_edit_experienceTableBody').html('');
+
+            if (emp.experiences && emp.experiences.length > 0) {
+
+                $.each(emp.experiences, function(index, experience){
+                    let fileUrl = '/storage/employees/experience/' + experience.attachment;
+                    $('#pro_edit_experienceTableBody').append(`
+                        <tr data-id="${experience.id}">
+
+                            <td>
+                                <input type="text"
+                                    class="form-control company_name"
+                                    value="${experience.company_name ?? ''}">
+                            </td>
+
+                            <td>
+                                <input type="text"
+                                    class="form-control job_role"
+                                    value="${experience.job_role ?? ''}">
+                            </td>
+
+                            <td>
+                                <input type="number"
+                                    class="form-control year_of_experience"
+                                    value="${experience.year_of_experience ?? ''}">
+                            </td>
+
+                            
+
+                            <td style="white-space: nowrap;">
+
+                                ${
+                                    experience.attachment
+                                    ? `
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-primary"
+                                                onclick="viewProAttachment('${fileUrl}')"
+                                                title="View">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </button>
+
+                                        <a href="${fileUrl}"
+                                        download
+                                        class="btn btn-sm btn-outline-success"
+                                        title="Download">
+                                            <i class="bi bi-download"></i>
+                                        </a>
+                                    `
+                                    : `
+                                        <span class="badge bg-secondary">No File</span>
+                                    `
+                                }
+
+                                <input type="file"
+                                    class="form-control form-control-sm attachment d-inline-block ms-2"
+                                    style="width:180px;"
+                                    accept=".pdf,.jpg,.jpeg,.png">
+
+                            </td>
+
+                            <td>
+                                <button type="button"
+                                        class="btn btn-sm btn-danger removeProfileRow">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+                        `);
+
+                });
+
+            }
+            else{
+
+                $('#pro_edit_experienceTableBody').html(`
+                    <tr id="noexperience">
+                        <td colspan="6" class="text-center" >
+                            No experience details found.
+                        </td>
+                    </tr>
+                `);
+
+            }
+            // Banking
             $('#pro_edit_bank').val(emp.bank_name);
             $('#pro_edit_account').val(emp.account_no);
+
 
             // Open first tab
 
@@ -612,6 +746,342 @@ function editProEmployee(id)
 
 }
 
+$('#addEducationRow').click(function () {
+    $("#noeducation").remove();
+    let row = `
+    <tr data-id="">
+
+        <td>
+            <input type="text"
+                class="form-control qualification"
+                placeholder="Qualification">
+        </td>
+
+        <td>
+            <input type="text"
+                class="form-control university_board"
+                placeholder="University / Board">
+        </td>
+
+        <td>
+            <input type="number"
+                class="form-control passing_year"
+                min="1950"
+                max="2100">
+        </td>
+
+        <td>
+            <input type="text"
+                class="form-control percentage"
+                placeholder="Percentage / CGPA">
+        </td>
+
+        <td>
+
+            <input type="file"
+                class="form-control attachment"
+                accept=".pdf,.jpg,.jpeg,.png">
+        </td>
+            
+        <td>   
+            <button type="button"
+                class="btn btn-sm btn-danger mt-1 removeProfileRow">
+                <i class="bi bi-trash"></i>
+            </button> 
+        </td>
+
+    </tr>
+    `;
+
+    $('#pro_edit_educationTableBody').append(row);
+
+});
+$('#saveEducation').click(function () {
+
+    let isValid = true;
+    let errorMessage = '';
+
+    $('#pro_edit_educationTableBody tr').each(function (index) {
+
+        let qualification = $(this).find('.qualification').val()?.trim();
+        let university = $(this).find('.university_board').val()?.trim();
+        let passingYear = $(this).find('.passing_year').val()?.trim();
+        let percentage = $(this).find('.percentage').val()?.trim();
+        
+        let attachment = $(this).find('.attachment')[0];
+
+        if ($(this).data('id') == '' || $(this).data('id') == undefined) {
+
+            if (!attachment || attachment.files.length == 0) {
+                isValid = false;
+                errorMessage = 'Please upload an attachment in row ' + (index + 1);
+                return false;
+            }
+        }
+        if (!qualification) {
+            isValid = false;
+            errorMessage = 'Please enter Qualification in row ' + (index + 1);
+            return false;
+        }
+
+        if (!university) {
+            isValid = false;
+            errorMessage = 'Please enter University / Board in row ' + (index + 1);
+            return false;
+        }
+
+        if (!passingYear) {
+            isValid = false;
+            errorMessage = 'Please enter Passing Year in row ' + (index + 1);
+            return false;
+        }
+
+        if (!percentage) {
+            isValid = false;
+            errorMessage = 'Please enter Percentage / CGPA in row ' + (index + 1);
+            return false;
+        }
+    });
+
+    if (!isValid) {
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Validation',
+            text: errorMessage
+        });
+
+        return;
+    }
+
+    // -----------------------------
+    // Validation passed
+    // -----------------------------
+
+    let formData = new FormData();
+    let employeeId = $('#pro_edit_employee_id').val();
+
+    formData.append('_token', '{{ csrf_token() }}');
+    formData.append('employee_id', employeeId);
+
+    $('#pro_edit_educationTableBody tr').each(function (index) {
+        let educationId = $(this).attr('data-id') || '';
+
+        formData.append(
+            `education[${index}][id]`,
+            educationId
+        );
+        formData.append(`education[${index}][qualification]`,
+            $(this).find('.qualification').val());
+
+        formData.append(`education[${index}][university_board]`,
+            $(this).find('.university_board').val());
+
+        formData.append(`education[${index}][passing_year]`,
+            $(this).find('.passing_year').val());
+
+        formData.append(`education[${index}][percentage]`,
+            $(this).find('.percentage').val());
+
+        let fileInput = $(this).find('.attachment')[0];
+
+        if (fileInput && fileInput.files.length > 0) {
+            formData.append(`education[${index}][attachment]`, fileInput.files[0]);
+        }
+
+    });
+
+    $.ajax({
+        url: "{{ route('employee.education.store') }}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        success: function (res) {
+
+            Swal.fire(
+                'Success',
+                res.message,
+                'success'
+            );
+
+        },
+
+        error: function (xhr) {
+
+            Swal.fire(
+                'Error',
+                xhr.responseJSON.message,
+                'error'
+            );
+
+        }
+
+    });
+
+});
+
+$('#addExperienceRow').click(function () {
+    $("#noexperience").remove();
+    let row = `
+    <tr data-id="">
+
+        <td>
+            <input type="text"
+                class="form-control company_name"
+                placeholder="Company Name">
+        </td>
+
+        <td>
+            <input type="text"
+                class="form-control job_role"
+                placeholder="Job Role">
+        </td>
+
+        <td>
+            <input type="text"
+                class="form-control year_of_experience">
+        </td>
+
+
+        <td>
+
+            <input type="file"
+                class="form-control attachment"
+                accept=".pdf,.jpg,.jpeg,.png">
+        </td>
+            
+        <td>   
+            <button type="button"
+                class="btn btn-sm btn-danger mt-1 removeProfileRow">
+                <i class="bi bi-trash"></i>
+            </button> 
+        </td>
+
+    </tr>
+    `;
+
+    $('#pro_edit_experienceTableBody').append(row);
+
+});
+$('#saveExperience').click(function () {
+
+    let isValid = true;
+    let errorMessage = '';
+
+    $('#pro_edit_experienceTableBody tr').each(function (index) {
+
+        let company_name = $(this).find('.company_name').val()?.trim();
+        let job_role = $(this).find('.job_role').val()?.trim();
+        let year_of_experience = $(this).find('.year_of_experience').val()?.trim();
+        
+        let attachment = $(this).find('.attachment')[0];
+
+        if ($(this).data('id') == '' || $(this).data('id') == undefined) {
+
+            if (!attachment || attachment.files.length == 0) {
+                isValid = false;
+                errorMessage = 'Please upload an attachment in row ' + (index + 1);
+                return false;
+            }
+        }
+        if (!company_name) {
+            isValid = false;
+            errorMessage = 'Please enter Company Name in row ' + (index + 1);
+            return false;
+        }
+
+        if (!job_role) {
+            isValid = false;
+            errorMessage = 'Please enter Job Role in row ' + (index + 1);
+            return false;
+        }
+
+        if (!year_of_experience) {
+            isValid = false;
+            errorMessage = 'Please enter Experience in row ' + (index + 1);
+            return false;
+        }
+
+    });
+
+    if (!isValid) {
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Validation',
+            text: errorMessage
+        });
+
+        return;
+    }
+
+    // -----------------------------
+    // Validation passed
+    // -----------------------------
+
+    let formData = new FormData();
+    let employeeId = $('#pro_edit_employee_id').val();
+
+    formData.append('_token', '{{ csrf_token() }}');
+    formData.append('employee_id', employeeId);
+
+    $('#pro_edit_experienceTableBody tr').each(function (index) {
+        let experienceId = $(this).attr('data-id') || '';
+
+        formData.append(
+            `experience[${index}][id]`,
+            experienceId
+        );
+        formData.append(`experience[${index}][company_name]`,
+            $(this).find('.company_name').val());
+
+        formData.append(`experience[${index}][job_role]`,
+            $(this).find('.job_role').val());
+
+        formData.append(`experience[${index}][year_of_experience]`,
+            $(this).find('.year_of_experience').val());
+
+        
+        let fileInput = $(this).find('.attachment')[0];
+
+        if (fileInput && fileInput.files.length > 0) {
+            formData.append(`experience[${index}][attachment]`, fileInput.files[0]);
+        }
+
+    });
+
+    $.ajax({
+        url: "{{ route('employee.experience.store') }}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        success: function (res) {
+
+            Swal.fire(
+                'Success',
+                res.message,
+                'success'
+            );
+
+        },
+
+        error: function (xhr) {
+
+            Swal.fire(
+                'Error',
+                xhr.responseJSON.message,
+                'error'
+            );
+
+        }
+
+    });
+
+});
 function togglePassword(id, button) {
 
     let input = $('#' + id);
@@ -629,6 +1099,11 @@ function togglePassword(id, button) {
     }
 
 }
+$(document).on('click', '.removeProfileRow', function () {
+
+    $(this).closest('tr').remove();
+
+});
 
 function loadDashboardStats() {
 
@@ -1152,7 +1627,46 @@ function drawEmployeeChart(labels,data,colors,total){
 
 }
 
+function resetPassword(id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to reset this employee's password.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Reset Password',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
 
+            // Your AJAX call here
+            $.ajax({
+                url: '/employee/reset-password/' + id,
+                type: 'POST',
+                data: {
+                    id: id,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    Swal.fire(
+                        'Reset!',
+                        'Employee password has been reset successfully.',
+                        'success'
+                    );
+                },
+                error: function() {
+                    Swal.fire(
+                        'Error!',
+                        'Something went wrong.',
+                        'error'
+                    );
+                }
+            });
+
+        }
+    });
+}
 
 function loadOnboardingChart() {
 
@@ -1666,6 +2180,178 @@ function celebrationBlast(){
 $('#celebrationModal').on('shown.bs.modal', function () {
     celebrationBlast();
 });
+
+$('#pro_changePasswordBtn').click(function () {
+
+    let employee_id = $('#pro_reset_employee_id').val();
+    let password = $('#pro_new_password').val();
+    let confirmPassword = $('#pro_confirm_password').val();
+
+    if (password == '') {
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Warning',
+            text: 'Please enter new password.'
+        });
+
+        return;
+    }
+
+    if (password != confirmPassword) {
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Password Mismatch',
+            text: 'Both passwords must be the same.'
+        });
+
+        return;
+    }
+
+    Swal.fire({
+
+        title: 'Are you sure?',
+        text: 'Do you want to change your password?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Change Password',
+        cancelButtonText: 'Cancel'
+
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+
+            $.ajax({
+
+                url: '/employee/change-password/' + employee_id,
+                type: 'POST',
+
+                data: {
+
+                    password: password,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+
+                },
+
+                success: function (response) {
+
+                    Swal.fire({
+
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message
+
+                    });
+
+                    $('#new_password').val('');
+                    $('#confirm_password').val('');
+
+                },
+
+                error: function () {
+
+                    Swal.fire({
+
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Unable to change password.'
+
+                    });
+
+                }
+
+            });
+
+        }
+
+    });
+
+});
+$('#pro_changePhotoBtn').click(function () {
+
+    $('#pro_profile_photo').click();
+
+});
+// Upload automatically after selecting image
+$('#pro_profile_photo').change(function () {
+
+    let file = this.files[0];
+
+    if (!file) return;
+
+    // Preview image
+    let reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        $('#pro_edit_profile_image').attr('src', e.target.result);
+
+    }
+
+    reader.readAsDataURL(file);
+
+
+    // Upload
+
+    let formData = new FormData();
+
+    formData.append('photo', file);
+    formData.append('id', $('#pro_reset_employee_id').val());
+    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+    $.ajax({
+
+        url: "{{ route('employee.update.photo') }}",
+
+        type: "POST",
+
+        data: formData,
+
+        processData: false,
+
+        contentType: false,
+
+        beforeSend:function(){
+
+            Swal.fire({
+                title:'Uploading...',
+                allowOutsideClick:false,
+                didOpen:()=>{
+                    Swal.showLoading();
+                }
+            });
+
+        },
+
+        success:function(res){
+
+            Swal.fire({
+                icon:'success',
+                title:'Success',
+                text:res.message,
+                timer:1500,
+                showConfirmButton:false
+            });
+
+            // $('#employeeTable').DataTable().ajax.reload(null,false);
+
+        },
+
+        error:function(xhr){
+
+            Swal.fire({
+                icon:'error',
+                title:'Error',
+                text:xhr.responseJSON?.message ?? 'Unable to upload image.'
+            });
+
+        }
+
+    });
+
+});
+
 
 </script>
 

@@ -15,6 +15,8 @@ use App\Models\Project;
 use App\Models\Task;
 use App\Models\TaskUpdate;
 use App\Models\EmployeeOffboard;
+use App\Models\EmployeeEducation;
+use App\Models\EmployeeExperience;
 use App\Exports\EmployeeExport;
 use App\Exports\OnboardEmployeeExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -1331,5 +1333,198 @@ class EmployeeController extends Controller
 
         }
 
+    }
+
+    
+    public function storeEducation(Request $request)
+    {
+        $savedIds = [];
+
+        foreach ($request->education as $index => $edu) {
+
+            $filename = null;
+
+            // Upload new attachment
+            if ($request->hasFile("education.$index.attachment")) {
+
+                $file = $request->file("education.$index.attachment");
+
+                $filename = $request->employee_id . '_' . time() . '_' . $index . '.' . $file->getClientOriginalExtension();
+
+                $file->storeAs(
+                    'employees/education',
+                    $filename,
+                    'public'
+                );
+            }
+
+            // Update Existing Record
+            if (!empty($edu['id'])) {
+
+                $education = EmployeeEducation::find($edu['id']);
+
+                if ($education) {
+
+                    $education->qualification = $edu['qualification'];
+                    $education->university_board = $edu['university_board'];
+                    $education->passing_year = $edu['passing_year'];
+                    $education->percentage = $edu['percentage'];
+
+                    // Replace attachment if new one uploaded
+                    if ($filename) {
+
+                        // Delete old file
+                        if ($education->attachment) {
+
+                            $oldFile = 'employees/education/' . $education->attachment;
+
+                            if (Storage::disk('public')->exists($oldFile)) {
+                                Storage::disk('public')->delete($oldFile);
+                            }
+                        }
+
+                        // Save only filename
+                        $education->attachment = $filename;
+                    }
+
+                    $education->save();
+
+                    $savedIds[] = $education->id;
+                }
+
+            } else {
+
+                // Create New Record
+                $education = EmployeeEducation::create([
+                    'employee_id'      => $request->employee_id,
+                    'qualification'    => $edu['qualification'],
+                    'university_board' => $edu['university_board'],
+                    'passing_year'     => $edu['passing_year'],
+                    'percentage'       => $edu['percentage'],
+                    'attachment'       => $filename, // Only filename
+                ]);
+
+                $savedIds[] = $education->id;
+            }
+        }
+
+        // Delete removed education records and their files
+        $deletedEducations = EmployeeEducation::where('employee_id', $request->employee_id)
+            ->whereNotIn('id', $savedIds)
+            ->get();
+
+        foreach ($deletedEducations as $education) {
+
+            if ($education->attachment) {
+
+                $filePath = 'employees/education/' . $education->attachment;
+
+                if (Storage::disk('public')->exists($filePath)) {
+                    Storage::disk('public')->delete($filePath);
+                }
+            }
+
+            $education->delete();
+        }
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Education details saved successfully.'
+        ]);
+    }
+
+    public function storeExperience(Request $request)
+    {
+        $savedIds = [];
+
+        foreach ($request->experience as $index => $exp) {
+
+            $filename = null;
+
+            // Upload new attachment
+            if ($request->hasFile("experience.$index.attachment")) {
+
+                $file = $request->file("experience.$index.attachment");
+
+                $filename = $request->employee_id . '_' . time() . '_' . $index . '.' . $file->getClientOriginalExtension();
+
+                $file->storeAs(
+                    'employees/experience',
+                    $filename,
+                    'public'
+                );
+            }
+
+            // Update Existing Record
+            if (!empty($exp['id'])) {
+
+                $experience = EmployeeExperience::find($exp['id']);
+
+                if ($experience) {
+
+                    $experience->company_name = $exp['company_name'];
+                    $experience->job_role = $exp['job_role'];
+                    $experience->year_of_experience = $exp['year_of_experience'];
+
+                    // Replace attachment if new one uploaded
+                    if ($filename) {
+
+                        // Delete old file
+                        if ($experience->attachment) {
+
+                            $oldFile = 'employees/experience/' . $experience->attachment;
+
+                            if (Storage::disk('public')->exists($oldFile)) {
+                                Storage::disk('public')->delete($oldFile);
+                            }
+                        }
+
+                        // Save only filename
+                        $experience->attachment = $filename;
+                    }
+
+                    $experience->save();
+
+                    $savedIds[] = $experience->id;
+                }
+
+            } else {
+
+                // Create New Record
+                $experience = EmployeeExperience::create([
+                    'employee_id'      => $request->employee_id,
+                    'company_name'    => $exp['company_name'],
+                    'job_role' => $exp['job_role'],
+                    'year_of_experience'     => $exp['year_of_experience'],
+                    'attachment'       => $filename, // Only filename
+                ]);
+
+                $savedIds[] = $experience->id;
+            }
+        }
+
+        // Delete removed experience records and their files
+        $deletedExperience = EmployeeExperience::where('employee_id', $request->employee_id)
+            ->whereNotIn('id', $savedIds)
+            ->get();
+
+        foreach ($deletedExperience as $experience) {
+
+            if ($experience->attachment) {
+
+                $filePath = 'employees/experience/' . $experience->attachment;
+
+                if (Storage::disk('public')->exists($filePath)) {
+                    Storage::disk('public')->delete($filePath);
+                }
+            }
+
+            $experience->delete();
+        }
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Experience details saved successfully.'
+        ]);
     }
 }

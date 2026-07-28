@@ -12,11 +12,11 @@ return new class extends Migration
     {
         Schema::table('leaves', function (Blueprint $table) {
 
-            $table->dropColumn('manager_status');
+            // $table->dropColumn('manager_status');
 
-            $table->string('manager_approval', 256)
-                  ->nullable()
-                  ->after('status');
+            //$table->string('manager_approval', 256)
+            //      ->nullable()
+            //      ->after('status');
         });
     }
 

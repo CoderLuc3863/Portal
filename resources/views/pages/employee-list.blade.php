@@ -179,8 +179,7 @@
             <div class="modal-body">
 
                 <hr>
-
-                <ul class="nav nav-pills mb-4 gap-2"
+                 <ul class="nav nav-pills mb-4 gap-2"
                     id="employeeProfileTabs"
                     role="tablist">
 
@@ -228,9 +227,11 @@
                         <button class="nav-link"
                                 data-bs-toggle="pill"
                                 data-bs-target="#employeeExperienceInfo">
-                            Experience Details
+                            Experience Detasils
                         </button>
                     </li>
+                    
+
 
                 </ul>
 
@@ -418,40 +419,24 @@
                         <h5 class="mb-4">Educational Information</h5>
 
                         <div class="table-responsive">
-
                             <table class="table table-striped align-middle">
-
                                 <thead class="table-light">
-
                                     <tr>
-
                                         <th>Qualification</th>
-
                                         <th>University / Board</th>
-
                                         <th>Year of Passing</th>
-
                                         <th>Percentage / CGPA</th>
                                         <th>Attachement</th>
-
                                     </tr>
-
                                 </thead>
-
                                 <tbody id="educationTableBody">
-
                                     <tr>
-
                                         <td colspan="5" class="text-center text-muted">
                                             No education details found.
                                         </td>
-
                                     </tr>
-
                                 </tbody>
-
                             </table>
-
                         </div>
 
                     </div>
@@ -515,7 +500,7 @@
                         </div>
 
                     </div>
-                   <div class="tab-pane fade" id="employeeExperienceInfo">
+                    <div class="tab-pane fade" id="employeeExperienceInfo">
 
                         <h5 class="mb-4">Experience Details</h5>
 
@@ -556,8 +541,9 @@
                         </div>
 
                     </div>
-
+                    
                 </div>
+               
 
             </div>
 
@@ -679,6 +665,7 @@
                         </button>
                     </li>
 
+                    
                 </ul>
 
                 <div class="tab-content">
@@ -1053,13 +1040,39 @@
                     <div class="tab-pane fade"
                          id="editEducation">
 
-                        <div id="educationRepeater"></div>
-
-                        <button class="btn btn-success">
-
+                        <div class="text-end">
+                        <button class="btn btn-success mb-2" id="addEmpEducationRow">
                             Add Qualification
-
                         </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Qualification</th>
+                                        <th>University / Board</th>
+                                        <th>Year of Passing</th>
+                                        <th>Percentage / CGPA</th>
+                                        <th>Attachement</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="edit_educationTableBody">
+                                    <tr id="listnoeducation">
+                                        <td colspan="6" class="text-center text-muted">
+                                            No education details found.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        
+                        <div class="text-start">
+                        <button class="btn btn-primary" id="saveEmpEducation">
+                            Save Education
+                        </button>
+                        </div>
 
                     </div>
 
@@ -1156,15 +1169,42 @@
                     <div class="tab-pane fade"
                          id="editExperience">
 
-                        <div id="experienceRepeater"></div>
-
-                        <button class="btn btn-success">
-
+                        <div class="text-end">
+                        <button class="btn btn-success mb-2" id="addEmpExperienceRow">
                             Add Experience
-
                         </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Company Name</th>
+                                        <th>Job Role</th>
+                                        <th>Year of Experience</th>
+                                        <th>Certificates</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="edit_experienceTableBody">
+                                    <tr id="listnoexperience">
+                                        <td colspan="6" class="text-center text-muted">
+                                            No experience details found.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        
+                        <div class="text-start">
+                        <button class="btn btn-primary" id="saveEmpExperience">
+                            Save Experience
+                        </button>
+                        </div>
 
                     </div>
+
+                    
 
                 </div>
 
@@ -1412,16 +1452,10 @@ $('#profile_photo').change(function () {
 });
 function editEmployee(id)
 {
-
-    $.ajax({
-        
-
+    $.ajax({     
         url:'/employee/edit/'+id,
-
         type:'GET',
-
         beforeSend:function(){
-
             Swal.fire({
                 title:'Loading...',
                 text:'Fetching employee details',
@@ -1430,11 +1464,8 @@ function editEmployee(id)
                     Swal.showLoading();
                 }
             });
-
         },
-
         success:function(emp){
-
             Swal.close();
             console.log(emp);
             // Hidden ID
@@ -1481,16 +1512,13 @@ function editEmployee(id)
             $('#edit_work_location').val(emp.work_location);
             
             // Banking
-            
             $('#bank_employee_id').val(emp.id);
             $('#bank_account_number').val(emp.account_no);
             $('#edit_bank_name').val(emp.bank_name);
             $('#ifsc_code').val(emp.ifsc);
             $('#branch_name').val(emp.branch);
            if (emp.passbook) {
-
                 let fileUrl = '/storage/employees/passbook/' + emp.passbook;
-
                 $('#passbookPreview').html(`
                     <button type="button"
                             class="btn btn-sm btn-info"
@@ -1498,17 +1526,186 @@ function editEmployee(id)
                         <i class="fas fa-eye"></i> View Passbook
                     </button>
                 `);
-
             } else {
-
                 $('#passbookPreview').html('');
-
             }
 
+
+            //education
+            $('#edit_educationTableBody').html('');
+
+            if (emp.educations && emp.educations.length > 0) {
+
+                $.each(emp.educations, function(index, education){
+                    let fileUrl = '/storage/employees/education/' + education.attachment;
+                    $('#edit_educationTableBody').append(`
+                        <tr data-id="${education.id}">
+
+                            <td>
+                                <input type="text"
+                                    class="form-control qualification"
+                                    value="${education.qualification ?? ''}">
+                            </td>
+
+                            <td>
+                                <input type="text"
+                                    class="form-control university_board"
+                                    value="${education.university_board ?? ''}">
+                            </td>
+
+                            <td>
+                                <input type="number"
+                                    class="form-control passing_year"
+                                    value="${education.passing_year ?? ''}">
+                            </td>
+
+                            <td>
+                                <input type="text"
+                                    class="form-control percentage"
+                                    value="${education.percentage ?? ''}">
+                            </td>
+
+                            <td style="white-space: nowrap;">
+
+                                ${
+                                    education.attachment
+                                    ? `
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-primary"
+                                                onclick="viewAttachment('${fileUrl}')"
+                                                title="View">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </button>
+
+                                        <a href="${fileUrl}"
+                                        download
+                                        class="btn btn-sm btn-outline-success"
+                                        title="Download">
+                                            <i class="bi bi-download"></i>
+                                        </a>
+                                    `
+                                    : `
+                                        <span class="badge bg-secondary">No File</span>
+                                    `
+                                }
+
+                                <input type="file"
+                                    class="form-control form-control-sm attachment d-inline-block ms-2"
+                                    style="width:180px;"
+                                    accept=".pdf,.jpg,.jpeg,.png">
+
+                            </td>
+
+                            <td>
+                                <button type="button"
+                                        class="btn btn-sm btn-danger removeRow">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+                        `);
+
+                });
+
+            }
+            else{
+
+                $('#edit_educationTableBody').html(`
+                    <tr id="listnoeducation">
+                        <td colspan="6" class="text-center" >
+                            No education details found.
+                        </td>
+                    </tr>
+                `);
+
+            }
+            //experience
+            $('#edit_experienceTableBody').html('');
+
+            if (emp.experiences && emp.experiences.length > 0) {
+
+                $.each(emp.experiences, function(index, experience){
+                    let fileUrl = '/storage/employees/experience/' + experience.attachment;
+                    $('#edit_experienceTableBody').append(`
+                        <tr data-id="${experience.id}">
+
+                            <td>
+                                <input type="text"
+                                    class="form-control company_name"
+                                    value="${experience.company_name ?? ''}">
+                            </td>
+
+                            <td>
+                                <input type="text"
+                                    class="form-control job_role"
+                                    value="${experience.job_role ?? ''}">
+                            </td>
+
+                            <td>
+                                <input type="text"
+                                    class="form-control year_of_experience"
+                                    value="${experience.year_of_experience ?? ''}">
+                            </td>
+
+
+                            <td style="white-space: nowrap;">
+
+                                ${
+                                    experience.attachment
+                                    ? `
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-primary"
+                                                onclick="viewAttachment('${fileUrl}')"
+                                                title="View">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </button>
+
+                                        <a href="${fileUrl}"
+                                        download
+                                        class="btn btn-sm btn-outline-success"
+                                        title="Download">
+                                            <i class="bi bi-download"></i>
+                                        </a>
+                                    `
+                                    : `
+                                        <span class="badge bg-secondary">No File</span>
+                                    `
+                                }
+
+                                <input type="file"
+                                    class="form-control form-control-sm attachment d-inline-block ms-2"
+                                    style="width:180px;"
+                                    accept=".pdf,.jpg,.jpeg,.png">
+
+                            </td>
+
+                            <td>
+                                <button type="button"
+                                        class="btn btn-sm btn-danger removeRow">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+                        `);
+
+                });
+
+            }
+            else{
+
+                $('#edit_experienceTableBody').html(`
+                    <tr id="listnoexperience">
+                        <td colspan="6" class="text-center" >
+                            No experience details found.
+                        </td>
+                    </tr>
+                `);
+
+            }
             // Open first tab
-
             $('#employeeEditModal').modal('show');
-
             $('#editProfile-tab').tab('show');
 
         },
@@ -1605,46 +1802,7 @@ function editEmployee(id)
     </div>
     `;
 }
-function resetPassword(id) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You want to reset this employee's password.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, Reset Password',
-        cancelButtonText: 'Cancel'
-    }).then((result) => {
-        if (result.isConfirmed) {
 
-            // Your AJAX call here
-            $.ajax({
-                url: '/employee/reset-password/' + id,
-                type: 'POST',
-                data: {
-                    id: id,
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    Swal.fire(
-                        'Reset!',
-                        'Employee password has been reset successfully.',
-                        'success'
-                    );
-                },
-                error: function() {
-                    Swal.fire(
-                        'Error!',
-                        'Something went wrong.',
-                        'error'
-                    );
-                }
-            });
-
-        }
-    });
-}
 function viewEmployee(id)
 {
     $.ajax({
@@ -1734,7 +1892,7 @@ function viewEmployee(id)
             if (response.educations && response.educations.length > 0) {
 
                 $.each(response.educations, function(index, education){
-
+                    let fileUrl = '/storage/employees/education/' + education.attachment;
                     $('#educationTableBody').append(`
                         <tr>
 
@@ -1750,13 +1908,13 @@ function viewEmployee(id)
                                 
             
                             ${education.attachment ? `<a href="javascript:void(0)"
-   onclick="viewAttachment('${education.attachment}')"
+   onclick="viewAttachment('${fileUrl}')"
    class="btn btn-sm btn-primary">
 
     <i class="bi bi-eye-fill"></i>
 
     </a>
-                                <a href="${education.attachment}" download class="btn btn-sm btn-success">
+                                <a href="${fileUrl}" download class="btn btn-sm btn-success">
                                     <i class="bi bi-download"></i>
                                 </a>` : '-'}
                             </td>
@@ -1785,11 +1943,11 @@ function viewEmployee(id)
                 $.each(response.experiences, function(index, experience) {
 
                     let attachment = '-';
-
+                    let fileUrl = '/storage/employees/experience/' + experience.attachment;
                     if (experience.attachment) {
                         attachment = `
                             <a href="javascript:void(0)"
-                                onclick="viewAttachment('${experience.attachment}')"
+                                onclick="viewAttachment('${fileUrl}')"
                                 class="btn btn-sm btn-primary"
                                 title="View">
 
@@ -1797,7 +1955,7 @@ function viewEmployee(id)
 
                                 </a>
 
-                            <a href="${experience.attachment}" download title="Download"  class="btn btn-sm btn-success">
+                            <a href="${fileUrl}" download title="Download"  class="btn btn-sm btn-success">
                                 <i class="bi bi-download"></i>
                             </a>
                         `;
@@ -2177,4 +2335,345 @@ function resignEmployee(id)
 
     });
 }
+$(document).on('click', '.removeRow', function () {
+    $(this).closest('tr').remove();
+});
+$('#addEmpEducationRow').click(function () {
+    $("#listnoeducation").remove();
+    let row = `
+    <tr data-id="">
+
+        <td>
+            <input type="text"
+                class="form-control qualification"
+                placeholder="Qualification">
+        </td>
+
+        <td>
+            <input type="text"
+                class="form-control university_board"
+                placeholder="University / Board">
+        </td>
+
+        <td>
+            <input type="number"
+                class="form-control passing_year"
+                min="1950"
+                max="2100">
+        </td>
+
+        <td>
+            <input type="text"
+                class="form-control percentage"
+                placeholder="Percentage / CGPA">
+        </td>
+
+        <td>
+
+            <input type="file"
+                class="form-control attachment"
+                accept=".pdf,.jpg,.jpeg,.png">
+        </td>
+            
+        <td>   
+            <button type="button"
+                class="btn btn-sm btn-danger mt-1 removeRow">
+                <i class="bi bi-trash"></i>
+            </button> 
+        </td>
+
+    </tr>
+    `;
+
+    $('#edit_educationTableBody').append(row);
+
+});
+$('#saveEmpEducation').click(function () {
+
+    let isValid = true;
+    let errorMessage = '';
+
+    $('#edit_educationTableBody tr').each(function (index) {
+
+        let qualification = $(this).find('.qualification').val()?.trim();
+        let university = $(this).find('.university_board').val()?.trim();
+        let passingYear = $(this).find('.passing_year').val()?.trim();
+        let percentage = $(this).find('.percentage').val()?.trim();
+        
+        let attachment = $(this).find('.attachment')[0];
+
+        if ($(this).data('id') == '' || $(this).data('id') == undefined) {
+
+            if (!attachment || attachment.files.length == 0) {
+                isValid = false;
+                errorMessage = 'Please upload an attachment in row ' + (index + 1);
+                return false;
+            }
+        }
+        if (!qualification) {
+            isValid = false;
+            errorMessage = 'Please enter Qualification in row ' + (index + 1);
+            return false;
+        }
+
+        if (!university) {
+            isValid = false;
+            errorMessage = 'Please enter University / Board in row ' + (index + 1);
+            return false;
+        }
+
+        if (!passingYear) {
+            isValid = false;
+            errorMessage = 'Please enter Passing Year in row ' + (index + 1);
+            return false;
+        }
+
+        if (!percentage) {
+            isValid = false;
+            errorMessage = 'Please enter Percentage / CGPA in row ' + (index + 1);
+            return false;
+        }
+    });
+
+    if (!isValid) {
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Validation',
+            text: errorMessage
+        });
+
+        return;
+    }
+
+    // -----------------------------
+    // Validation passed
+    // -----------------------------
+
+    let formData = new FormData();
+    let employeeId = $('#edit_employee_id').val();
+
+    formData.append('_token', '{{ csrf_token() }}');
+    formData.append('employee_id', employeeId);
+
+    $('#edit_educationTableBody tr').each(function (index) {
+        let educationId = $(this).attr('data-id') || '';
+
+        formData.append(
+            `education[${index}][id]`,
+            educationId
+        );
+        formData.append(`education[${index}][qualification]`,
+            $(this).find('.qualification').val());
+
+        formData.append(`education[${index}][university_board]`,
+            $(this).find('.university_board').val());
+
+        formData.append(`education[${index}][passing_year]`,
+            $(this).find('.passing_year').val());
+
+        formData.append(`education[${index}][percentage]`,
+            $(this).find('.percentage').val());
+
+        let fileInput = $(this).find('.attachment')[0];
+
+        if (fileInput && fileInput.files.length > 0) {
+            formData.append(`education[${index}][attachment]`, fileInput.files[0]);
+        }
+
+    });
+
+    $.ajax({
+        url: "{{ route('employee.education.store') }}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        success: function (res) {
+
+            Swal.fire(
+                'Success',
+                res.message,
+                'success'
+            );
+
+        },
+
+        error: function (xhr) {
+
+            Swal.fire(
+                'Error',
+                xhr.responseJSON.message,
+                'error'
+            );
+
+        }
+
+    });
+
+});
+
+$('#addEmpExperienceRow').click(function () {
+    $("#listnoexperience").remove();
+    let row = `
+    <tr data-id="">
+
+        <td>
+            <input type="text"
+                class="form-control company_name"
+                placeholder="Company Name">
+        </td>
+
+        <td>
+            <input type="text"
+                class="form-control job_role"
+                placeholder="Job Role">
+        </td>
+
+        <td>
+            <input type="text"
+                class="form-control year_of_experience"
+                >
+        </td>
+
+        <td>
+
+            <input type="file"
+                class="form-control attachment"
+                accept=".pdf,.jpg,.jpeg,.png">
+        </td>
+            
+        <td>   
+            <button type="button"
+                class="btn btn-sm btn-danger mt-1 removeRow">
+                <i class="bi bi-trash"></i>
+            </button> 
+        </td>
+
+    </tr>
+    `;
+
+    $('#edit_experienceTableBody').append(row);
+
+});
+$('#saveEmpExperience').click(function () {
+
+    let isValid = true;
+    let errorMessage = '';
+
+    $('#edit_experienceTableBody tr').each(function (index) {
+
+        let company_name = $(this).find('.company_name').val()?.trim();
+        let job_role = $(this).find('.job_role').val()?.trim();
+        let year_of_experience = $(this).find('.year_of_experience').val()?.trim();
+        
+        let attachment = $(this).find('.attachment')[0];
+
+        if ($(this).data('id') == '' || $(this).data('id') == undefined) {
+
+            if (!attachment || attachment.files.length == 0) {
+                isValid = false;
+                errorMessage = 'Please upload an attachment in row ' + (index + 1);
+                return false;
+            }
+        }
+        if (!company_name) {
+            isValid = false;
+            errorMessage = 'Please enter Company Name in row ' + (index + 1);
+            return false;
+        }
+
+        if (!job_role) {
+            isValid = false;
+            errorMessage = 'Please enter Jobe Role in row ' + (index + 1);
+            return false;
+        }
+
+        if (!year_of_experience) {
+            isValid = false;
+            errorMessage = 'Please enter Experience Year in row ' + (index + 1);
+            return false;
+        }
+
+    });
+
+    if (!isValid) {
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Validation',
+            text: errorMessage
+        });
+
+        return;
+    }
+
+    // -----------------------------
+    // Validation passed
+    // -----------------------------
+
+    let formData = new FormData();
+    let employeeId = $('#edit_employee_id').val();
+
+    formData.append('_token', '{{ csrf_token() }}');
+    formData.append('employee_id', employeeId);
+
+    $('#edit_experienceTableBody tr').each(function (index) {
+        let experienceId = $(this).attr('data-id') || '';
+
+        formData.append(
+            `experience[${index}][id]`,
+            experienceId
+        );
+        formData.append(`experience[${index}][company_name]`,
+            $(this).find('.company_name').val());
+
+        formData.append(`experience[${index}][job_role]`,
+            $(this).find('.job_role').val());
+
+        formData.append(`experience[${index}][year_of_experience]`,
+            $(this).find('.year_of_experience').val());
+
+
+        let fileInput = $(this).find('.attachment')[0];
+
+        if (fileInput && fileInput.files.length > 0) {
+            formData.append(`experience[${index}][attachment]`, fileInput.files[0]);
+        }
+
+    });
+
+    $.ajax({
+        url: "{{ route('employee.experience.store') }}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        success: function (res) {
+
+            Swal.fire(
+                'Success',
+                res.message,
+                'success'
+            );
+
+        },
+
+        error: function (xhr) {
+
+            Swal.fire(
+                'Error',
+                xhr.responseJSON.message,
+                'error'
+            );
+
+        }
+
+    });
+
+});
+
+
 </script>

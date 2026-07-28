@@ -236,9 +236,8 @@
       <!--end::Header-->
 
 
-  <!-- Modal for Profile -->
-  <!-- Profile Modal -->
- <!-- View Modal -->
+
+ <!-- View Profile Modal -->
 <div class="modal fade"
      id="pro_employeeProfileModal"
      tabindex="-1"
@@ -260,9 +259,7 @@
 
                     <div>
                         <h5 class="fw-bold mb-1" id="pro_employee_name"></h5>
-
                         <div class="text-muted small" id="pro_employee_designation"></div>
-
                         <div class="text-muted small" id="pro_employee_code"></div>
                     </div>
 
@@ -285,15 +282,15 @@
                     <li class="nav-item">
                         <button class="nav-link active"
                                 data-bs-toggle="pill"
-                                data-bs-target="#employeeProfileInfo">
-                            Profile Information
+                                data-bs-target="#pro_employeeProfileInfo">
+                            Profile
                         </button>
                     </li>
 
                     <li class="nav-item">
                         <button class="nav-link"
                                 data-bs-toggle="pill"
-                                data-bs-target="#employeeOfficialInfo">
+                                data-bs-target="#pro_employeeOfficialInfo">
                             Official Information
                         </button>
                     </li>
@@ -301,7 +298,7 @@
                     <li class="nav-item">
                         <button class="nav-link"
                                 data-bs-toggle="pill"
-                                data-bs-target="#employeeIdentityInfo">
+                                data-bs-target="#pro_employeeIdentityInfo">
                             Documents
                         </button>
                     </li>
@@ -309,7 +306,7 @@
                     <li class="nav-item">
                         <button class="nav-link"
                                 data-bs-toggle="pill"
-                                data-bs-target="#employeeEducationInfo">
+                                data-bs-target="#pro_employeeEducationInfo">
                             Educational Information
                         </button>
                     </li>
@@ -317,7 +314,7 @@
                     <li class="nav-item">
                         <button class="nav-link"
                                 data-bs-toggle="pill"
-                                data-bs-target="#employeeBankInfo">
+                                data-bs-target="#pro_employeeBankInfo">
                             Banking Details
                         </button>
                     </li>
@@ -325,10 +322,18 @@
                     <li class="nav-item">
                         <button class="nav-link"
                                 data-bs-toggle="pill"
-                                data-bs-target="#employeeExperienceInfo">
+                                data-bs-target="#pro_employeeExperienceInfo">
                             Experience Details
                         </button>
                     </li>
+                     <li class="nav-item">
+                        <button class="nav-link"
+                                data-bs-toggle="pill"
+                                data-bs-target="#resetPassword">
+                            Password Setting
+                        </button>
+                    </li>
+
 
                 </ul>
 
@@ -515,40 +520,24 @@
                         <h5 class="mb-4">Educational Information</h5>
 
                         <div class="table-responsive">
-
                             <table class="table table-striped align-middle">
-
                                 <thead class="table-light">
-
                                     <tr>
-
                                         <th>Qualification</th>
-
                                         <th>University / Board</th>
-
                                         <th>Year of Passing</th>
-
                                         <th>Percentage / CGPA</th>
                                         <th>Attachement</th>
-
                                     </tr>
-
                                 </thead>
-
                                 <tbody id="pro_educationTableBody">
-
                                     <tr>
-
                                         <td colspan="5" class="text-center text-muted">
                                             No education details found.
                                         </td>
-
                                     </tr>
-
                                 </tbody>
-
                             </table>
-
                         </div>
 
                     </div>
@@ -609,44 +598,84 @@
                         </div>
 
                     </div>
-                   <div class="tab-pane fade" id="pro_employeeExperienceInfo">
+                    <div class="tab-pane fade" id="pro_employeeExperienceInfo">
 
                         <h5 class="mb-4">Experience Details</h5>
-
                         <div class="table-responsive">
-
                             <table class="table table-striped align-middle">
-
                                 <thead class="table-light">
-
                                     <tr>
-
                                         <th>Company Name</th>
-
                                         <th>Job Role</th>
-
                                         <th>Year of Experience</th>
-
                                         <th>Certificate</th>
-
                                     </tr>
-
                                 </thead>
-
                                 <tbody id="pro_experienceTableBody">
-
                                     <tr>
-
                                         <td colspan="4" class="text-center text-muted">
                                             No experience details found.
                                         </td>
-
                                     </tr>
-
                                 </tbody>
-
                             </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade"
+                         id="resetPassword">
 
+                        <input type="hidden" id="pro_reset_employee_id" value="{{ session('id') }}">
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">New Password</label>
+
+                                <div class="input-group">
+                                    <input type="password"
+                                        class="form-control"
+                                        id="pro_new_password"
+                                        placeholder="Enter new password">
+
+                                    <button class="btn btn-outline-secondary"
+                                            type="button"
+                                            onclick="togglePassword('pro_new_password', this)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Re-enter New Password</label>
+
+                                <div class="input-group">
+                                    <input type="password"
+                                        class="form-control"
+                                        id="pro_confirm_password"
+                                        placeholder="Re-enter new password">
+
+                                    <button class="btn btn-outline-secondary"
+                                            type="button"
+                                            onclick="togglePassword('pro_confirm_password', this)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="button"
+                                    class="btn btn-light"
+                                    data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+                            &nbsp;
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    id="pro_changePasswordBtn">
+                                Save Changes
+                            </button>
                         </div>
 
                     </div>
@@ -660,69 +689,8 @@
 
 </div>
 
-<!--edit Modal-->
 
-<div class="modal fade" id="pro_attachmentViewerModal" tabindex="-1">
-
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title">
-                    Attachment Preview
-                </h5>
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
-                </button>
-
-            </div>
-
-            <div class="modal-body text-center">
-
-                <img id="pro_attachmentImage"
-                     class="img-fluid d-none"
-                     style="max-height:75vh;">
-
-                <iframe id="pro_attachmentPdf"
-                        class="d-none"
-                        width="100%"
-                        height="700"
-                        frameborder="0">
-                </iframe>
-
-            </div>
-
-            <div class="modal-footer">
-
-                <a id="pro_attachmentDownload"
-                   href="#"
-                   download
-                   class="btn btn-success">
-
-                    <i class="bi bi-download"></i>
-                    Download
-
-                </a>
-
-                <button class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-
-                    Close
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
+<!-- Edit Profile Modal -->
 <div class="modal fade" id="pro_employeeEditModal" tabindex="-1" aria-hidden="true">
 
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -1083,17 +1051,41 @@
                     </div>
 
                     <!-- Education -->
-
                     <div class="tab-pane fade"
                          id="pro_editEducation">
-
-                        <div id="pro_educationRepeater"></div>
-
-                        <button class="btn btn-success">
-
+                        <div class="text-end">
+                        <button class="btn btn-success mb-2" id="addEducationRow">
                             Add Qualification
-
                         </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Qualification</th>
+                                        <th>University / Board</th>
+                                        <th>Year of Passing</th>
+                                        <th>Percentage / CGPA</th>
+                                        <th>Attachement</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pro_edit_educationTableBody">
+                                    <tr id="noeducation">
+                                        <td colspan="6" class="text-center text-muted">
+                                            No education details found.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        
+                        <div class="text-start">
+                        <button class="btn btn-primary" id="saveEducation">
+                            Save Education
+                        </button>
+                        </div>
 
                     </div>
 
@@ -1149,13 +1141,38 @@
                     <div class="tab-pane fade"
                          id="pro_editExperience">
 
-                        <div id="pro_experienceRepeater"></div>
-
-                        <button class="btn btn-success">
-
+                        <div class="text-end">
+                        <button class="btn btn-success mb-2" id="addExperienceRow">
                             Add Experience
-
                         </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Company Name</th>
+                                        <th>Job Role</th>
+                                        <th>Year of Experience</th>
+                                        <th>Certificate</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pro_edit_experienceTableBody">
+                                    <tr id="noexperience">
+                                        <td colspan="6" class="text-center text-muted">
+                                            No experience details found.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        
+                        <div class="text-start">
+                        <button class="btn btn-primary" id="saveExperience">
+                            Save Experience
+                        </button>
+                        </div>
 
                     </div>
 
@@ -1209,7 +1226,7 @@
                                     data-bs-dismiss="modal">
                                 Cancel
                             </button>
-&nbsp;
+                            &nbsp;
                             <button type="button"
                                     class="btn btn-primary"
                                     id="changePasswordBtn">
@@ -1220,6 +1237,68 @@
                     </div>
 
                 </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--Attachement view Modal-->
+<div class="modal fade" id="pro_attachmentViewerModal" tabindex="-1">
+
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Attachment Preview
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body text-center">
+
+                <img id="pro_attachmentImage"
+                     class="img-fluid d-none"
+                     style="max-height:75vh;">
+
+                <iframe id="pro_attachmentPdf"
+                        class="d-none"
+                        width="100%"
+                        height="700"
+                        frameborder="0">
+                </iframe>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <a id="pro_attachmentDownload"
+                   href="#"
+                   download
+                   class="btn btn-success">
+
+                    <i class="bi bi-download"></i>
+                    Download
+
+                </a>
+
+                <button class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
 
             </div>
 
