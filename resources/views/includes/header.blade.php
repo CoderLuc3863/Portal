@@ -50,7 +50,7 @@
 
             <!--begin::Messages Dropdown Menu remove s-->
             
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown d-none">
               <a class="nav-link" data-bs-toggle="dropdown" href="#">
                 <i class="bi bi-backpack4-fill"></i>
                 <span class="navbar-badge badge text-bg-danger">3</span>
@@ -140,7 +140,7 @@
             <!--end::Messages Dropdown Menu-->
 
             <!--begin::Notifications Dropdown Menu  remove s-->
-            <li class="nav-item dropdowns">
+            <li class="nav-item dropdowns d-none">
               <a class="nav-link" data-bs-toggle="dropdown" href="#">
                 <i class="bi bi-bell-fill"></i>
                 <span class="navbar-badge badge text-bg-warning">15</span>

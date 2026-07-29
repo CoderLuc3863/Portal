@@ -953,11 +953,11 @@ class LeaveController extends Controller
 
             'id'=>'required|exists:leave_counts,id',
 
-            'sick_leaves'=>'required|integer|min:0|max:12',
+            'sick_leaves'=>'required|min:0|max:12',
 
-            'casual_leaves'=>'required|integer|min:0|max:12',
+            'casual_leaves'=>'required|min:0|max:12',
 
-            'earned_leaves'=>'required|integer|min:0|max:12',
+            'earned_leaves'=>'required|min:0|max:12',
 
         ]);
 

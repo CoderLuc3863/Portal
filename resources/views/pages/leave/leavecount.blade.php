@@ -157,7 +157,7 @@
                                 class="form-control"
                                 name="sick_leaves"
                                 min="0"
-                                max="12"
+                                max="12"  step="0.01"
                                 required>
                         </div>
 
@@ -168,7 +168,7 @@
                                 class="form-control"
                                 name="casual_leaves"
                                 min="0"
-                                max="12"
+                                max="12"  step="0.01"
                                 required>
                         </div>
 
@@ -179,7 +179,7 @@
                                 class="form-control"
                                 name="earned_leaves"
                                 min="0"
-                                max="12"
+                                max="12" step="0.01"
                                 required>
                         </div>
 

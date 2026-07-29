@@ -905,7 +905,7 @@ class EmployeeController extends Controller
             $used = Leave::where('employee_id', $employeeId)
                 ->where('status', 'Approved')
                 ->whereYear('from_date', $year)
-                ->count();
+                ->sum('leavecount');
                 
 
             $leaveBalance = $total - $used;

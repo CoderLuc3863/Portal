@@ -23,7 +23,6 @@ class LoginController extends Controller
     // Handle login
     public function login(Request $request)
     { 
-        // dd("heer");
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             // session is automatically created by Laravel
