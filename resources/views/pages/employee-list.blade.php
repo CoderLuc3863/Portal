@@ -2003,10 +2003,15 @@ function viewEmployee(id)
             $('#doc_resume').html(
                 documentCard('Resume',response.resume)
             );
+            if (response.passbook) {
+                let url = '/storage/employees/passbook/' + response.passbook;
 
-            $('#doc_passbook').html(
-                documentCard('Passbook',response.passbook)
-            );
+                $('#doc_passbook').html(
+                    documentCard('Passbook', url)
+                );
+            } else {
+                $('#doc_passbook').empty();
+            }
 
             $('#doc_insurance').html(
                 documentCard('Insurance Card',response.insurance)

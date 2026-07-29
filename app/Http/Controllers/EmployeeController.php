@@ -455,9 +455,9 @@ class EmployeeController extends Controller
         $employee->photo_url = $employee->photo
             ? asset('storage/employees/photos/' . $employee->photo)
             : asset('assets/img/user.png');
-        $employee->passbook = $employee->passbook
-            ? asset('storage/employees/passbook/' . $employee->passbook)
-            : "-";
+        //$employee->passbook = $employee->passbook
+        //    ? asset('storage/employees/passbook/' . $employee->passbook)
+        //    : "-";
         return response()->json($employee);
     }
 
@@ -881,11 +881,13 @@ class EmployeeController extends Controller
         // Total Projects
         $totalProjects = Project::where('status', 'Active')
             ->where(function ($query) use ($employeeId) {
-
                 $query->where('project_manager_id', $employeeId)
                     ->orWhere('team_head_id', $employeeId)
-                    ->orWhereRaw('FIND_IN_SET(?, team_members)', [$employeeId]);
-
+                    // ->orWhereRaw('FIND_IN_SET(?, team_members)', [$employeeId]);
+                    ->orWhereRaw(
+                            "JSON_CONTAINS_PATH(team_members, 'one', ?)",
+                            ['$."' . $employeeId . '"']
+                        );
             })
             ->count();
 
@@ -1525,6 +1527,42 @@ class EmployeeController extends Controller
         return response()->json([
             'status'  => true,
             'message' => 'Experience details saved successfully.'
+        ]);
+    }
+
+    public function saveBank(Request $request)
+    {
+        $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'account_no'  => 'required',
+            'ifsc'        => 'required',
+            'bank_name'   => 'required',
+            'branch'      => 'required',
+            'passbook'    => 'nullable|mimes:jpg,jpeg,png,pdf|max:2048'
+        ]);
+
+        $employee = Employee::findOrFail($request->employee_id);
+        $employee->account_no = $request->account_no;
+        $employee->ifsc = strtoupper($request->ifsc);
+        $employee->bank_name = $request->bank_name;
+        $employee->branch = $request->branch;
+
+        if ($request->hasFile('passbook')) {
+            $file = $request->file('passbook');
+            $filename = $request->employee_id . '_' . time() . '_passbook.' . $file->getClientOriginalExtension();
+            $file->storeAs(
+                    'employees/passbook',
+                    $filename,
+                    'public'
+                );
+            $employee->passbook = $filename;
+        }
+
+        $employee->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Bank details updated successfully.'
         ]);
     }
 }

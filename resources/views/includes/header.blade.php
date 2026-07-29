@@ -594,6 +594,21 @@
                                 </div>
 
                             </div>
+                            <div class="col-md-7">
+
+                                <div class="mb-4">
+
+                                    <small class="text-muted d-block">
+                                        Passbook
+                                    </small>
+
+                                    <div id="pro_passbook" class="fw-semibold"></div>
+
+                                </div>
+
+                                
+
+                            </div>
 
                         </div>
 
@@ -1095,45 +1110,54 @@
                          id="pro_editBank">
 
                         <form id="pro_bankForm">
-
-                            <div class="row">
-
-                                <div class="col-md-6">
-
-                                    <label>Bank</label>
-
-                                    <input type="text"
-                                           class="form-control"
-                                           name="bank_name"
-                                           id="pro_edit_bank">
-
-                                </div>
-
-                                <div class="col-md-6">
-
+                            <div class="row">                               
+                                <div class="col-md-6 mb-3">
                                     <label>Account No</label>
-
                                     <input type="text"
                                            class="form-control"
                                            name="account_no"
-                                           id="pro_edit_account">
-
+                                           id="pro_edit_account_no">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label>IFSC</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="ifsc"
+                                           id="pro_edit_ifsc">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label>Bank Name</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="bank_name"
+                                           id="pro_edit_bank_name">
                                 </div>
 
+                                <div class="col-md-6 mb-3">
+                                    <label>Branch</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="branch"
+                                           id="pro_edit_branch">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Passbook</label>
+                                    <input type="file"
+                                           class="form-control"
+                                           name="passbook"
+                                           id="pro_edit_passbook">
+                                </div>
+                                <div class="col-md-6 d-flex align-items-end" id="edit_passbook">
+                                </div>
+                                
                             </div>
 
                             <div class="text-end mt-3">
-
-                                <button class="btn btn-primary">
-
+                                <button class="btn btn-primary" id="proSaveBank">
                                     Save Bank
-
                                 </button>
-
                             </div>
-
                         </form>
-
                     </div>
 
                     <!-- Experience -->

@@ -296,6 +296,8 @@ function viewProEmployee(id)
             $('#pro_employee_status').text(
                 response.status == 1 ? 'Active' : 'Inactive'
             );
+
+            //banks
             $('#pro_bank_account_no').text(response.account_no ?? '-');
 
             $('#pro_bank_name').text(response.bank_name ?? '-');
@@ -303,6 +305,23 @@ function viewProEmployee(id)
             $('#pro_bank_ifsc').text(response.ifsc ?? '-');
 
             $('#pro_bank_branch').text(response.branch ?? '-');
+
+            if (response.passbook != null && response.passbook != '') {
+                let fileUrl = '/storage/employees/passbook/' + response.passbook;
+                $('#pro_passbook').html(`
+                <button type="button"
+                        class="btn btn-sm btn-outline-primary"
+                        onclick="viewProAttachment('${fileUrl}')"
+                        title="View">
+                    <i class="bi bi-eye-fill"></i>
+                </button> &nbsp;&nbsp;
+                    <a href="${fileUrl}" download class="btn btn-sm btn-success" title="Download">
+                        <i class="bi bi-download"></i>
+                    </a>
+                `);
+            } else {
+                $('#pro_passbook').html('');
+            }
             
             //education
             $('#pro_educationTableBody').html('');
@@ -719,11 +738,29 @@ function editProEmployee(id)
                 `);
 
             }
+
             // Banking
-            $('#pro_edit_bank').val(emp.bank_name);
-            $('#pro_edit_account').val(emp.account_no);
-
-
+            $('#pro_edit_bank_name').val(emp.bank_name);
+            $('#pro_edit_account_no').val(emp.account_no);
+            $('#pro_edit_ifsc').val(emp.ifsc);
+            $('#pro_edit_branch').val(emp.branch);
+            // $("#edit_passbook").html();
+            if (emp.passbook != null && emp.passbook != '') {
+                let fileUrl = '/storage/employees/passbook/' + emp.passbook;
+                $('#edit_passbook').html(`
+                <button type="button"
+                        class="btn btn-sm btn-outline-primary"
+                        onclick="viewProAttachment('${fileUrl}')"
+                        title="View">
+                    <i class="bi bi-eye-fill"></i>
+                </button> &nbsp;&nbsp;
+                    <a href="${fileUrl}" download class="btn btn-sm btn-success" title="Download">
+                        <i class="bi bi-download"></i>
+                    </a>
+                `);
+            } else {
+                $('#edit_passbook').html('');
+            }
             // Open first tab
 
             $('#pro_employeeEditModal').modal('show');
@@ -1319,77 +1356,7 @@ function startTimer(){
 
 }
 
-// var doughnutcenterText = {
-//     id: 'doughnutcenterText',
-//     afterDraw(chart) {
 
-//         const {ctx} = chart;
-//         const meta = chart.getDatasetMeta(0);
-
-//         if (!meta.data.length) return;
-
-//         const x = meta.data[0].x;
-//         const y = meta.data[0].y;
-
-//         ctx.save();
-
-//         ctx.textAlign = 'center';
-
-//         ctx.font = 'bold 28px sans-serif';
-//         ctx.fillStyle = '#212529';
-//         ctx.fillText('158', x, y - 8);
-
-//         ctx.font = '14px sans-serif';
-//         ctx.fillStyle = '#6c757d';
-//         ctx.fillText('Total Tasks', x, y + 18);
-
-//         ctx.restore();
-//     }
-// };
-
-// var taskChart = null;
-
-// function initTaskStatusChart() {
-//     const canvas = document.getElementById("taskStatusChart");
-
-//     if (!canvas) {
-//         console.log("Canvas not found");
-//         return;
-//     }
-
-//     if (taskChart) {
-//         taskChart.destroy();
-//     }
-
-//     taskChart = new Chart(canvas, {
-//         type: 'doughnut',
-//         data: {
-//             labels: ['Completed','In Progress','Pending','Over Due'],
-//             datasets: [{
-//                 data: [75,45,30,8],
-//                 backgroundColor:[
-//                     '#22c55e',
-//                     '#fbbf24',
-//                     '#d63384',
-//                     '#ef4444'
-//                 ],
-//                 borderWidth:0
-//             }]
-//         },
-//         options:{
-//             responsive:true,
-//             maintainAspectRatio:false,
-//             cutout:'72%',
-//             plugins:{
-//                 legend:{
-//                     display:false
-//                 }
-//             }
-//         },
-//         plugins:[doughnutcenterText]
-//     });
-
-// }
 let taskChart = null;
 
 const doughnutcenterText = {
@@ -2352,6 +2319,68 @@ $('#pro_profile_photo').change(function () {
 
 });
 
+$(document).on('click', '#proSaveBank', function(e) {
+    e.preventDefault();
+
+    let formData = new FormData($('#pro_bankForm')[0]);
+
+    formData.append('employee_id', $('#pro_edit_employee_id').val()); // Hidden field
+
+    $.ajax({
+        url: "{{ route('employee.save.bank') }}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        beforeSend: function () {
+            $('#proSaveBank').prop('disabled', true).text('Saving...');
+        },
+        success: function(response) {
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: response.message
+            });
+
+            $('#proSaveBank').prop('disabled', false).text('Save Bank');
+
+        },
+        error: function(xhr) {
+
+            $('#proSaveBank').prop('disabled', false).text('Save Bank');
+
+            if (xhr.status == 422) {
+
+                let errors = xhr.responseJSON.errors;
+                let msg = '';
+
+                $.each(errors, function(key, value){
+                    msg += value[0] + '<br>';
+                });
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    html: msg
+                });
+
+            } else {
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong.'
+                });
+
+            }
+        }
+    });
+
+});
 
 </script>
 

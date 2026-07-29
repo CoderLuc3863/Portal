@@ -79,7 +79,7 @@ Route::post('/employee/update-bank',[EmployeeController::class,'updateBank']);
 // Route::post('/employee/update-education',[EmployeeController::class,'updateEducation']);
 Route::post('/employee/education/store',[EmployeeController::class,'storeEducation'])->name('employee.education.store');
 Route::post('/employee/experience/store',[EmployeeController::class,'storeExperience'])->name('employee.experience.store');
-// Route::post('/employee/update-experience',[EmployeeController::class,'updateExperience']);
+Route::post('/employee/save-bank', [EmployeeController::class, 'saveBank'])->name('employee.save.bank');
 Route::post('/employee/update-document',[EmployeeController::class,'updateDocument']);
 Route::get('/dashboard/stats', [EmployeeController::class, 'dashboardStats'])->name('dashboard.stats');
 Route::get('/dashboard/employee-stats', [EmployeeController::class, 'employeeDashboardStats'])->name('dashboard.employee.stats');
@@ -87,14 +87,9 @@ Route::get('/dashboard/employee-distribution',[EmployeeController::class,'employ
 Route::get('/dashboard/task-status',[EmployeeController::class, 'taskStatus'])->name('dashboard.task.status');
 Route::get('/dashboard/onboarding-chart',[EmployeeController::class, 'onboardingChart'])->name('dashboard.onboarding.chart');
 Route::get('/dashboard/attendance-overview',[EmployeeController::class,'attendanceOverview'])->name('dashboard.attendance.overview');    
-Route::get('/dashboard/my-tasks', [TaskController::class, 'dashboardMyTasks'])
-    ->name('dashboard.myTasks');
-Route::get('/dashboard/employee-attendance-summary', [LeaveController::class, 'employeeAttendanceSummary'])
-    ->name('dashboard.employeeAttendanceSummary');
-    Route::get(
-    '/dashboard/employee-projects',
-    [EmployeeController::class, 'employeeProjects']
-)->name('dashboard.employee.projects');
+Route::get('/dashboard/my-tasks', [TaskController::class, 'dashboardMyTasks'])->name('dashboard.myTasks');
+Route::get('/dashboard/employee-attendance-summary', [LeaveController::class, 'employeeAttendanceSummary'])->name('dashboard.employeeAttendanceSummary');
+Route::get('/dashboard/employee-projects',[EmployeeController::class, 'employeeProjects'])->name('dashboard.employee.projects');
 Route::get('/employees/edit/{id}', [EmployeeController::class, 'edit'])->name('employees.edit');
 Route::delete('/employees/delete/{id}', [EmployeeController::class, 'destroy'])->name('employees.delete');
 Route::get('/employees-by-department',[EmployeeController::class,'employeesByDepartment'])->name('employees.department');
