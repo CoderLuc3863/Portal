@@ -81,6 +81,11 @@ class Payroll extends Model
         'project_allowance' => 'decimal:2',
         'special_allowance' => 'decimal:2',
         'total_earnings' => 'decimal:2',
+        'house_rent' => 'decimal:2',
+        'conveyance' => 'decimal:2',
+        'medical' => 'decimal:2',
+        'cea' => 'decimal:2',
+        'telephone' => 'decimal:2',
 
         'professional_tax' => 'decimal:2',
         'pf' => 'decimal:2',
