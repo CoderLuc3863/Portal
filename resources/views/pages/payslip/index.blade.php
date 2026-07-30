@@ -1349,21 +1349,11 @@ $(document).on('click','.viewPayslip',function(){
             );
 
             
-            $('#houseAllowance').text(
-                numberFormat(p.house_rent)
-            );
-            $('#conveyanceAllowance').text(
-                numberFormat(p.conveyance)
-            );
-            $('#medicalAllowance').text(
-                numberFormat(p.medical)
-            );
-            $('#cea').text(
-                numberFormat(p.cea)
-            );
-            $('#telephoneAllowance').text(
-                numberFormat(p.telephone)
-            );
+            $('#houseAllowance').text(numberFormat(p.house_rent ?? 0));
+            $('#conveyanceAllowance').text(numberFormat(p.conveyance ?? 0));
+            $('#medicalAllowance').text(numberFormat(p.medical ?? 0));
+            $('#cea').text(numberFormat(p.cea ?? 0));
+            $('#telephoneAllowance').text(numberFormat(p.telephone ?? 0));
 
             $('#mOtherAllowance').text(
                 numberFormat(p.other_allowance)
