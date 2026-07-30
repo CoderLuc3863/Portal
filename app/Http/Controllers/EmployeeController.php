@@ -1565,4 +1565,21 @@ class EmployeeController extends Controller
             'message' => 'Bank details updated successfully.'
         ]);
     }
+    public function saveDocument(Request $request)
+    {
+        $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'uan' => 'nullable|string|max:50',
+        ]);
+
+        $employee = Employee::findOrFail($request->employee_id);
+
+        $employee->uan = $request->uan;
+        $employee->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'UAN saved successfully.'
+        ]);
+    }
 }

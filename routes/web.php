@@ -80,7 +80,9 @@ Route::post('/employee/update-bank',[EmployeeController::class,'updateBank']);
 Route::post('/employee/education/store',[EmployeeController::class,'storeEducation'])->name('employee.education.store');
 Route::post('/employee/experience/store',[EmployeeController::class,'storeExperience'])->name('employee.experience.store');
 Route::post('/employee/save-bank', [EmployeeController::class, 'saveBank'])->name('employee.save.bank');
-Route::post('/employee/update-document',[EmployeeController::class,'updateDocument']);
+// Route::post('/employee/update-document',[EmployeeController::class,'updateDocument']);
+Route::post('/employee/save-document', [EmployeeController::class, 'saveDocument'])->name('employee.saveDocument');
+
 Route::get('/dashboard/stats', [EmployeeController::class, 'dashboardStats'])->name('dashboard.stats');
 Route::get('/dashboard/employee-stats', [EmployeeController::class, 'employeeDashboardStats'])->name('dashboard.employee.stats');
 Route::get('/dashboard/employee-distribution',[EmployeeController::class,'employeeDistribution'])->name('dashboard.employee.distribution');

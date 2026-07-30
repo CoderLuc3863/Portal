@@ -377,6 +377,7 @@
                         <h5 class="mb-4">Documents and ID Cards</h5>
 
                         <div class="row">
+                            
                             <div class="col-2 mb-4">
                                 <small class="text-muted d-block">Aadhaar Number</small>
                                 <span id="identity_aadhar" class="fw-semibold">-</span>
@@ -407,7 +408,10 @@
                                 <small class="text-muted d-block">Resume</small>
                             </div>
                             <div class="col-4 mb-4" id="doc_resume" class="mt-3"></div>
-
+                            <div class="col-2 mb-4">
+                                <small class="text-muted d-block">UAN</small>
+                                <span id="view_uan" class="fw-semibold">-</span>
+                            </div>
 
                         </div>
 
@@ -1001,6 +1005,16 @@
 
                                 <div class="col-md-6 mb-3">
 
+                                    <label>UAN</label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           name="uan" id="edit_uan">
+
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+
                                     <label>Aadhaar</label>
 
                                     <input type="file"
@@ -1023,7 +1037,7 @@
 
                             <div class="text-end">
 
-                                <button class="btn btn-primary">
+                                <button class="btn btn-primary" id="saveDocuments">
 
                                     Save Documents
 
@@ -1704,6 +1718,9 @@ function editEmployee(id)
                 `);
 
             }
+            
+            //Document
+            $("#edit_uan").val(emp.uan);
             // Open first tab
             $('#employeeEditModal').modal('show');
             $('#editProfile-tab').tab('show');
@@ -1870,7 +1887,7 @@ function viewEmployee(id)
                 response.passport_no ?? '-'
             );
 
-            $('#identity_uan').text(
+            $('#view_uan').text(
                 response.uan ?? '-'
             );
 
@@ -2678,6 +2695,58 @@ $('#saveEmpExperience').click(function () {
 
     });
 
+});
+
+$('#documentForm').on('submit', function (e) {
+    e.preventDefault();
+    let employeeId = $('#edit_employee_id').val();
+    $.ajax({
+        url: "{{ route('employee.saveDocument') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            employee_id: employeeId,
+            uan: $('input[name="uan"]').val()
+        },
+        beforeSend: function () {
+            $('#saveDocuments')
+                .prop('disabled', true)
+                .html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+        },
+        success: function (response) {
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: response.message,
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+        },
+        error: function (xhr) {
+
+            let message = 'Something went wrong.';
+
+            if (xhr.status === 422) {
+                message = Object.values(xhr.responseJSON.errors)
+                    .map(error => error[0])
+                    .join('<br>');
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: message
+            });
+
+        },
+        complete: function () {
+            $('#saveDocuments')
+                .prop('disabled', false)
+                .html('Save Documents');
+        }
+    });
 });
 
 
