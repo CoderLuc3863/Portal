@@ -44,16 +44,9 @@ if($departmentId == 1 || $departmentId == 2){
 
             <h6 class="mb-0">Attendance Overview</h6>
 
-            <select class="form-select form-select-sm w-auto" id="attendanceMonth">
-                @for($i=0;$i<12;$i++)
-                    @php
-                        $date = now()->subMonths($i);
-                    @endphp
-                    <option value="{{ $date->format('Y-m') }}">
-                        {{ $date->format('F Y') }}
-                    </option>
-                @endfor
-            </select>
+           <!-- <select class="form-select form-select-sm w-auto" id="attendanceMonth">
+                
+            </select>-->
 
         </div>
 

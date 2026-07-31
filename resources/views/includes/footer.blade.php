@@ -385,7 +385,7 @@ function viewProEmployee(id)
                 $('#pro_experienceTableBody').html(`
                     <tr>
                         <td colspan="4" class="text-center">
-                            No education details found.
+                            No experience details found.
                         </td>
                     </tr>
                 `);
