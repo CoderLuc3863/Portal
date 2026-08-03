@@ -24,12 +24,29 @@ class SyncMonthlyAttendance extends Command
             ->max('device_log_id');
 
         $lastDeviceLogId = $lastDeviceLogId ?? 0;
+        
 
-        $logs = DB::connection('essl')
-            ->table($sourceTable)
-            ->where('DeviceLogId', '>', $lastDeviceLogId)
-            ->orderBy('DeviceLogId')
-            ->get();
+        // $logs = DB::connection('essl')
+        //     ->table($sourceTable)
+        //     ->where('DeviceLogId', '>', $lastDeviceLogId)
+        //     ->orderBy('DeviceLogId')
+        //     ->get();
+
+        $lastDeviceLogId = DB::table($targetTable)->max('device_log_id');
+
+        $query = DB::connection('essl')
+            ->table($sourceTable);
+
+        if ($lastDeviceLogId) {
+            $query->where('DeviceLogId', '>', $lastDeviceLogId);
+        } else {
+            $startDate = now()->startOfMonth()->toDateTimeString();
+            $endDate = now()->endOfMonth()->toDateTimeString();
+
+            $query->whereBetween('LogDate', [$startDate, $endDate]);
+        }
+
+        $logs = $query->orderBy('DeviceLogId')->get();
 
         if ($logs->count() == 0) {
 
