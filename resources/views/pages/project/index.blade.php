@@ -25,7 +25,7 @@
 
         <div class="row g-3">
 
-            <div class="col-md-3">
+            <div class="col-md-2">
 
                 <label class="form-label">
                     Year
@@ -51,7 +51,7 @@
 
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
 
                 <label class="form-label">
                     Month
@@ -77,7 +77,7 @@
 
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
 
                 <label class="form-label">
                     Status
@@ -101,8 +101,58 @@
                 </select>
 
             </div>
+             {{-- Project Manager --}}
+        <div class="col-md-2">
 
-            <div class="col-md-3 d-flex align-items-end">
+            <label class="form-label">
+                Project Manager
+            </label>
+
+            <select class="form-select" id="project_manager_id">
+
+                <option value="">
+                    Select Project Manager
+                </option>
+
+                @foreach($projectmanagers as $employee)
+
+                    <option value="{{ $employee->id }}">
+                        {{ $employee->name }}
+                    </option>
+
+                @endforeach
+
+            </select>
+
+        </div>
+
+        {{-- Team Head --}}
+        <div class="col-md-2">
+
+            <label class="form-label">
+                Team Head
+            </label>
+
+            <select class="form-select" id="team_head_id">
+
+                <option value="">
+                    Select Team Head
+                </option>
+
+                @foreach($teamheads as $employee)
+
+                    <option value="{{ $employee->id }}">
+                        {{ $employee->name }}
+                    </option>
+
+                @endforeach
+
+            </select>
+
+        </div>
+
+
+            <div class="col-md-2 d-flex align-items-end">
 
                 <button
                     class="btn btn-primary w-100"
@@ -130,6 +180,8 @@
                 <th>Project</th>
                 <th>Start Date</th>
                 <th>End Date</th>
+                <th>Manager</th>
+                <th>Team Head</th>
                 <th>Members</th>
                 <th>Status</th>
                 <th>Progress</th>
@@ -614,7 +666,8 @@ var table = $('#projectTable').DataTable({
 
             d.month = $('#month').val();
 
-            d.status = $('#status').val();
+            d.project_manager_id = $('#project_manager_id').val();
+            d.team_head_id = $('#team_head_id').val();
 
         }
     },
@@ -637,6 +690,13 @@ var table = $('#projectTable').DataTable({
 
         {
             data:'end_date'
+        },
+
+        {
+            data:'project_manager'
+        },
+        {
+            data:'team_head'
         },
 
         {
@@ -1169,11 +1229,15 @@ $('#exportBtn').click(function(){
     let month = $('#month').val();
 
     let status = $('#status').val();
+    let project_manager_id = $('#project_manager_id').val();
+    let team_head_id = $('#team_head_id').val();
 
     let url =
         "{{ route('project.export') }}" +
         '?year=' + year +
         '&month=' + month +
+        '&project_manager_id=' + project_manager_id +
+        '&team_head_id=' + team_head_id +
         '&status=' + status;
 
     window.location.href = url;

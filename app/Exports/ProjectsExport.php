@@ -23,6 +23,8 @@ class ProjectsExport implements FromCollection, WithHeadings
             'Start Date',
             'End Date',
             'Status',
+            'Project Manager',
+            'Team Head',
             'Members Count',
             'Team Members',
             'Description'
@@ -31,7 +33,7 @@ class ProjectsExport implements FromCollection, WithHeadings
 
     public function collection()
     {
-        $query = Project::query();
+        $query = Project::with("projectManager","teamHead");
 
         if ($this->request->year) {
 
@@ -56,6 +58,21 @@ class ProjectsExport implements FromCollection, WithHeadings
                 $this->request->status
             );
         }
+        if ($this->request->project_manager_id) {
+
+            $query->where(
+                'project_manager_id',
+                $this->request->project_manager_id
+            );
+        }
+
+        if ($this->request->team_head_id) {
+
+            $query->where(
+                'team_head_id',
+                $this->request->team_head_id
+            );
+        }
 
         return $query->get()->map(function ($project) {
 
@@ -63,10 +80,14 @@ class ProjectsExport implements FromCollection, WithHeadings
 
             foreach (($project->team_members ?? []) as $employeeId => $role) {
 
-                $employee = Employee::with('designation')
-                    ->find($employeeId);
+                $employee = Employee::with('designation')->find($employeeId);
 
                 if ($employee) {
+
+                    // Handle role if it is an array
+                    if (is_array($role)) {
+                        $role = $role['role'] ?? implode(', ', $role);
+                    }
 
                     $members[] =
                         $employee->name .
@@ -91,12 +112,14 @@ class ProjectsExport implements FromCollection, WithHeadings
                 ),
 
                 $project->status,
+                $project->projectManager->name,
+                $project->teamHead->name,
 
                 count(
                     $project->team_members ?? []
                 ),
 
-                implode("\n", $members),
+                implode("\r\n", $members),
 
                 $project->description
 

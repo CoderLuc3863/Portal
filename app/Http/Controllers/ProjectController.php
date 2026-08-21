@@ -16,16 +16,34 @@ class ProjectController extends Controller
     {
         $employees = Employee::orderBy('name')
             ->get();
+       // Only employees who are assigned as Project Managers
+    $projectManagerIds = Project::whereNotNull('project_manager_id')
+        ->distinct()
+        ->pluck('project_manager_id');
+
+    $projectmanagers = Employee::whereIn('id', $projectManagerIds)
+        ->orderBy('name')
+        ->get();
+
+    // Only employees who are assigned as Team Heads
+    $teamHeadIds = Project::whereNotNull('team_head_id')
+        ->distinct()
+        ->pluck('team_head_id');
+
+    $teamheads = Employee::whereIn('id', $teamHeadIds)
+        ->orderBy('name')
+        ->get();
+            
 
         return view(
             'pages.project.index',
-            compact('employees')
+            compact('employees',"teamheads","projectmanagers")
         );
     }
 
     public function list(Request $request)
     {
-        $query = Project::query();
+        $query = Project::with("projectManager","teamHead");
 
         if ($request->year) {
 
@@ -48,6 +66,21 @@ class ProjectController extends Controller
             $query->where(
                 'status',
                 $request->status
+            );
+        }
+        if ($request->project_manager_id) {
+
+            $query->where(
+                'project_manager_id',
+                $request->project_manager_id
+            );
+        }
+
+        if ($request->team_head_id) {
+
+            $query->where(
+                'team_head_id',
+                $request->team_head_id
             );
         }
 
@@ -99,6 +132,18 @@ class ProjectController extends Controller
 
                 return $row->end_date
                     ? date('d-m-Y', strtotime($row->end_date))
+                    : '-';
+            })
+            ->addColumn('project_manager', function ($row) {
+
+                return $row->projectManager->name
+                    ? $row->projectManager->name
+                    : '-';
+            })
+            ->addColumn('team_head', function ($row) {
+
+                return $row->teamHead->name
+                    ? $row->teamHead->name
                     : '-';
             })
             ->addColumn('progress', function ($row) {
