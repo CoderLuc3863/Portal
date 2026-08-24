@@ -275,6 +275,17 @@ $pages = config('access.page')[session('department_id')] ?? [];
                     </a>
                   </li>
                   @endif
+                  @if(in_array('project-costs',$pages))
+                  <li class="nav-item ">
+                    <a href="javascript:void(0)"
+                      data-page="{{ route('project.costs') }}" class="nav-link menu-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>
+                        Project Cost
+                      </p>
+                    </a>
+                  </li>
+                  @endif
                   @if(in_array('tasks-allocation',$pages))
                   <li class="nav-item ">
                     <a href="javascript:void(0)"

@@ -221,6 +221,9 @@ Route::get('/project-edit/{id}',[ProjectController::class,'edit'])->name('projec
 Route::post('/project-update/{id}',[ProjectController::class,'update'])->name('project.update');
 Route::delete('/project/delete/{id}',[ProjectController::class, 'delete'])->name('project.delete');
 Route::get('/project-export',[ProjectController::class,'export'])->name('project.export');
+Route::get('/project-costs',[ProjectController::class,'costs'])->name('project.costs');
+Route::get('/project-costs.list',[ProjectController::class,'costList'])->name('project-costs.list');
+Route::get('/project-costs-export',[ProjectController::class,'costExport'])->name('project-costs.export');
 
 Route::prefix('offboard')->group(function () {
     

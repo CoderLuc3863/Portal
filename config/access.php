@@ -55,6 +55,7 @@ $adminMenus = array_merge($commonMenus, [
     'project-management',
     'all-projects',
     'tasks-allocation',
+    'project-costs',
     'my-tasks',
     'tasks-utilization',
 

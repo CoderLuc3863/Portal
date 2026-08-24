@@ -1,9 +1,7 @@
 <div class="content-wrapper p-4">
-
     <div class="d-flex justify-content-between align-items-center mb-4">
-
         <div>
-            <h3 class="fw-bold mb-1"> Project Management</h3>
+            <h3 class="fw-bold mb-1"> Project Expense Tracking</h3>
         </div>
         <div>
             <button type="button"
@@ -12,66 +10,68 @@
                 <i class="bi bi-file-earmark-excel me-1"></i>
                 Export
             </button>
-            <button type="button"
-            class="btn btn-primary"
-            id="addProjectBtn">
-            + Add Project
-
-            </button> 
         </div>
-
     </div>
     <div class="mb-4">
-
         <div class="row g-3">
+            <div class="col-md-2">
+                <label class="form-label">
+                    From Date
+                </label>
+                <input type="date" name="from_date" id="from_date" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">
+                    To Date
+                </label>
+                <input type="date" name="to_date" id="to_date" class="form-control">
+            </div>
 
+            {{-- Project Manager --}}
             <div class="col-md-2">
 
                 <label class="form-label">
-                    Year
+                    Project Manager
                 </label>
 
-                <select
-                    class="form-select"
-                    id="year">
+                <select class="form-select" id="project_manager_id">
 
                     <option value="">
-                        Select Year
+                        Select Project Manager
                     </option>
 
-                    @for($year = date('Y')+1; $year >= 2020; $year--)
+                    @foreach($projectmanagers as $employee)
 
-                        <option value="{{ $year }}">
-                            {{ $year }}
+                        <option value="{{ $employee->id }}">
+                            {{ $employee->name }}
                         </option>
 
-                    @endfor
+                    @endforeach
 
                 </select>
 
             </div>
 
+            {{-- Team Head --}}
             <div class="col-md-2">
 
                 <label class="form-label">
-                    Month
+                    Team Head
                 </label>
 
-                <select
-                    class="form-select"
-                    id="month">
+                <select class="form-select" id="team_head_id">
 
                     <option value="">
-                        Select Month
+                        Select Team Head
                     </option>
 
-                    @for($month=1;$month<=12;$month++)
+                    @foreach($teamheads as $employee)
 
-                        <option value="{{ $month }}">
-                            {{ date('F', mktime(0,0,0,$month,1)) }}
+                        <option value="{{ $employee->id }}">
+                            {{ $employee->name }}
                         </option>
 
-                    @endfor
+                    @endforeach
 
                 </select>
 
@@ -101,623 +101,268 @@
                 </select>
 
             </div>
-             {{-- Project Manager --}}
-        <div class="col-md-2">
-
-            <label class="form-label">
-                Project Manager
-            </label>
-
-            <select class="form-select" id="project_manager_id">
-
-                <option value="">
-                    Select Project Manager
-                </option>
-
-                @foreach($projectmanagers as $employee)
-
-                    <option value="{{ $employee->id }}">
-                        {{ $employee->name }}
-                    </option>
-
-                @endforeach
-
-            </select>
-
-        </div>
-
-        {{-- Team Head --}}
-        <div class="col-md-2">
-
-            <label class="form-label">
-                Team Head
-            </label>
-
-            <select class="form-select" id="team_head_id">
-
-                <option value="">
-                    Select Team Head
-                </option>
-
-                @foreach($teamheads as $employee)
-
-                    <option value="{{ $employee->id }}">
-                        {{ $employee->name }}
-                    </option>
-
-                @endforeach
-
-            </select>
-
-        </div>
-
 
             <div class="col-md-2 d-flex align-items-end">
-
                 <button
                     class="btn btn-primary w-100"
                     id="searchBtn">
-
                     Search
-
                 </button>
-
             </div>
-
         </div>
-  
     </div>
 
-
-    <table
-        id="projectTable" class="table table-striped table-hover align-middle w-100 data-table">
-
+    <table id="projectTable" class="table table-striped table-hover align-middle w-100 data-table">
         <thead>
-
             <tr>
-
                 <th>Sl No.</th>
                 <th>Project</th>
-                <th>Start Date</th>
-                <th>End Date</th>
                 <th>Manager</th>
                 <th>Team Head</th>
                 <th>Members</th>
+                <th>Estimated Hour</th>
+                <th>Total Hour</th>
                 <th>Status</th>
-                <th>Progress</th>
                 <th>Actions</th>
-
             </tr>
-
         </thead>
-
     </table>
-
-
 </div>
-
-{{-- Add Project Modal --}}
-<div
-    class="modal fade"
-    id="projectModal"
-    tabindex="-1">
-
-    <div class="modal-dialog modal-lg">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title"  id="projectModalTitle">
-                    Add Project
-                </h5>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal">
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-
-                <form id="projectForm">
-
-                    @csrf
-                    <input
-                        type="hidden"
-                        name="id"
-                        id="project_id">
-                    <div class="row g-3">
-
-                        <div class="col-md-6">
-                            <label class="form-label">Project Name</label>
-                            <input type="text"
-                                name="project_name"
-                                class="form-control">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Project Manager</label>
-
-                            <select name="project_manager_id"
-                                    class="form-select">
-
-                                <option value="">
-                                    Select Project Manager
-                                </option>
-
-                                @foreach($employees as $employee)
-                                    <option value="{{ $employee->id }}">
-                                        {{ $employee->name }}
-                                    </option>
-                                @endforeach
-
-                            </select>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Start Date</label>
-
-                            <input type="date"
-                                name="start_date"
-                                class="form-control">
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">End Date</label>
-
-                            <input type="date"
-                                name="end_date"
-                                class="form-control">
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Estimated Hours</label>
-
-                            <input type="number"
-                                name="estimated_hours"
-                                class="form-control">
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Team Lead</label>
-
-                            <select name="team_head_id"
-                                    class="form-select">
-
-                                <option value="">
-                                    Select Team Lead
-                                </option>
-
-                                @foreach($employees as $employee)
-                                    <option value="{{ $employee->id }}">
-                                        {{ $employee->name }}
-                                    </option>
-                                @endforeach
-
-                            </select>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Status</label>
-
-                            <select name="status" class="form-select">
-                                <option value="Active">Active</option>
-                                <option value="Cancelled">Cancelled</option>
-                                <option value="Completed">Completed</option>
-                                <option value="Hold">Hold</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-9">
-                            <label class="form-label">Description</label>
-
-                            <textarea class="form-control"
-                                    name="description"
-                                    rows="2"></textarea>
-                        </div>
-
-                    </div>
-
-                    <hr>
-
-                    <div class="d-flex justify-content-between mb-3">
-
-                        <h6>Project Modules</h6>
-                        
-                        <button type="button"
-                                class="btn btn-sm btn-primary"
-                                id="addModuleRow">
-
-                            + Add Module
-
-                        </button>
-
-                    </div>
-
-                    <table class="table table-bordered">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>Module Name</th>
-
-                                <th width="10%">
-                                    Action
-                                </th>
-
-                            </tr>
-
-                        </thead>
-                        <input type="hidden" id="module_index" value="1">
-                        <tbody id="moduleTableBody">
-
-                        </tbody>
-
-                    </table>
-                    <hr>
-
-                    <div class="d-flex justify-content-between mb-3">
-
-                        <h6>
-                            Team Members
-                        </h6>
-
-                        <button
-                            type="button"
-                            class="btn btn-sm btn-primary"
-                            id="addMemberRow">
-
-                            + Add Member
-
-                        </button>
-
-                    </div>
-
-                    <table
-                        class="table table-bordered">
-
-                        <thead>
-
-                            <tr>
-
-                                <th width="30%">
-                                    Employee
-                                </th>
-
-                                <th width="30">
-                                    Role
-                                </th>
-                                <th width="30%">
-                                    Type
-                                </th>
-
-                                <th width="10%">
-                                    Action
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody id="memberTableBody">
-
-                        </tbody>
-
-                    </table>
-
-                </form>
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal">
-
-                    Close
-
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    id="saveProjectBtn">
-
-                    Save Project
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
 
 <div class="modal fade"
      id="viewProjectModal"
      tabindex="-1">
-
     <div class="modal-dialog modal-lg">
-
         <div class="modal-content">
-
             <div class="modal-header">
-
                 <h4 class="fw-bold mb-0">
                     Project Name:
                     <span id="projectName"></span>
                 </h4>
-
                 <button
                     type="button"
                     class="btn-close"
                     data-bs-dismiss="modal">
                 </button>
-
             </div>
 
             <div class="modal-body">
-
                 <div class="row mb-4">
-
-                    <div class="col-md-4 mt-2">
+                    <div class="col-md-6 mt-2">
+                        <small class="text-muted">
+                            From Date
+                        </small>
+                        <div
+                            class="fw-semibold"
+                            id="projectFromDate">
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <small class="text-muted">
+                            To Date
+                        </small>
+                        <div
+                            class="fw-semibold"
+                            id="projectToDate">
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <small class="text-muted">
+                            Project Manager
+                        </small>
+                        <div id="projectManager" class="fw-semibold"></div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <small class="text-muted">
+                            Team Lead
+                        </small>
+                        <div id="teamLead" class="fw-semibold"></div>
+                    </div>
+                    <div class="col-md-6 mt-2">
                         <small class="text-muted">
                             Start Date
                         </small>
-
                         <div
                             class="fw-semibold"
                             id="projectStartDate">
                         </div>
                     </div>
-
-                    <div class="col-md-4 mt-2">
+                    <div class="col-md-6 mt-2">
                         <small class="text-muted">
                             End Date
                         </small>
-
                         <div
                             class="fw-semibold"
                             id="projectEndDate">
                         </div>
                     </div>
-
-                    <div class="col-md-4 mt-2">
+                    <div class="col-md-6 mt-2">
+                        <small class="text-muted">
+                            Estimated Hours
+                        </small>
+                        <div id="estimatedHours" class="fw-semibold"></div>
+                    </div>       
+                    <div class="col-md-6 mt-2">
+                        <small class="text-muted">
+                            Total Hour Worked
+                        </small>
+                        <div
+                            class="fw-semibold"
+                            id="projectTotalHrWorked">
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2">
                         <small class="text-muted">
                             Status
                         </small>
-
                         <div
                             class="fw-semibold"
                             id="projectStatus">
                         </div>
                     </div>
-                    <div class="col-md-4 mt-2">
-
+                     <div class="col-md-6 mt-2">
                         <small class="text-muted">
-                            Project Manager
+                            Description
                         </small>
-
-                        <div id="projectManager" class="fw-semibold"></div>
-
-                    </div>
-                    <div class="col-md-4 mt-2">
-
-                        <small class="text-muted">
-                            Team Lead
-                        </small>
-
-                        <div id="teamLead" class="fw-semibold"></div>
-
-                    </div>
-                    <div class="col-md-4 mt-2">
-
-                        <small class="text-muted">
-                            Estimated Hours
-                        </small>
-
-                        <div id="estimatedHours" class="fw-semibold"></div>
-
-                    </div>
-
-                    
-
-                    
-                    <div class="col-md-4 mt-2">
-                        <small class="text-muted">
-                            Members
-                        </small>
-
                         <div
                             class="fw-semibold"
-                            id="projectMembersCount">
+                            id="projectTechnology">
                         </div>
                     </div>
-
+                    
+                    
                 </div>
 
-              
-
-                <div class="col-md-6 mt-2">
-
-                    <small class="text-muted">
-                        Technology
-                    </small>
-
-                    <div
-                        class="fw-semibold"
-                        id="projectTechnology">
-                    </div>
-
-                </div>
-
-
-                <hr>
-                <h5 class="mb-3">
-                    Project Modules
-                </h5>
-
-                <table class="table table-striped table-hover align-middle w-100 data-table">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Sl No.</th>
-                            <th>Modules</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody id="projectModulesBody">
-
-                    </tbody>
-
-                </table>
-
+                
                 <hr>
                 <h5 class="mb-3">
                     Project Members
                 </h5>
-
                 <table class="table table-striped table-hover align-middle w-100 data-table">
-
                     <thead>
-
                         <tr>
-
                             <th>Sl No.</th>
-                            <th>Employee ID</th>
-                            <th>Employee Name</th>
+                            <th>Employee ID / Name</th>
                             <th>Department</th>
-                            <th>Designation</th>
                             <th>Role</th>
-                            <th>Type</th>
-
+                            <th>Hours Worked</th>
+                            <th>Cost Per Hour</th>
+                            <th>Total Cost</th>
                         </tr>
-
                     </thead>
-
                     <tbody id="projectMembersBody">
-
                     </tbody>
-
+                     <tfoot>
+                        <tr>
+                            <th colspan="4" class="text-end">
+                                Grand Total
+                            </th>
+                            <th id="projectTotalHours">
+                                0
+                            </th>
+                            <th></th>
+                            <th id="projectGrandTotal">
+                                0
+                            </th>
+                        </tr>
+                    </tfoot>
                 </table>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
 
 <script>
-$('#addModuleRow').click(function(){
 
-    let nextIndex = parseInt(
-        $('#module_index').val()
-    ) || 1;
-
-    $('#moduleTableBody').append(`
-        <tr>
-            <td>
-                <input
-                    type="text"
-                    name="project_modules[${nextIndex}]"
-                    class="form-control"
-                    placeholder="Module Name">
-            </td>
-            <td>
-                <button
-                    type="button"
-                    class="btn btn-danger removeModule">
-                    X
-                </button>
-            </td>
-        </tr>
-    `);
-
-    $('#module_index').val(nextIndex + 1);
-});
 var table = $('#projectTable').DataTable({
 
-    processing:true,
+    processing: true,
+    serverSide: true,
 
-    serverSide:true,
+    ajax: {
+        url: "{{ route('project-costs.list') }}",
 
-    ajax:{
-        url:"{{ route('project.list') }}",
+        data: function (d) {
 
-        data:function(d){
+            d.from_date = $('#from_date').val();
+            d.to_date = $('#to_date').val();
 
-            d.year = $('#year').val();
+            d.project_manager_id =
+                $('#project_manager_id').val();
 
-            d.month = $('#month').val();
-            d.status = $('#status').val();
+            d.team_head_id =
+                $('#team_head_id').val();
 
-            d.project_manager_id = $('#project_manager_id').val();
-            d.team_head_id = $('#team_head_id').val();
-
+            d.status =
+                $('#status').val();
         }
     },
 
-    columns:[
+    columns: [
 
         {
-            data:'DT_RowIndex',
-            searchable:false,
-            orderable:false
-        },
-
-        {
-            data:'project_name'
+            data: 'DT_RowIndex',
+            name: 'DT_RowIndex',
+            searchable: false,
+            orderable: false
         },
 
         {
-            data:'start_date'
+            data: 'project_name',
+            name: 'project_name'
         },
 
         {
-            data:'end_date'
+            data: 'project_manager',
+            name: 'projectManager.name',
+            orderable: false
         },
 
         {
-            data:'project_manager'
-        },
-        {
-            data:'team_head'
-        },
-
-        {
-            data:'members_count'
-        },
-        {
-            data:'status'
+            data: 'team_head',
+            name: 'teamHead.name',
+            orderable: false
         },
 
         {
-            data:'progress'
+            data: 'members_count',
+            name: 'members_count',
+            searchable: false,
+            orderable: false
         },
+
         {
-            data:'action',
-            searchable:false,
-            orderable:false
+            data: 'estimated_hours',
+            name: 'estimated_hours'
+        },
+
+        {
+            data: 'total_hours',
+            name: 'total_hours'
+        },
+
+        {
+            data: 'status',
+            name: 'status'
+        },
+
+        {
+            data: 'action',
+            name: 'action',
+            searchable: false,
+            orderable: false
         }
 
-    ]
+    ],
 
+    order: [
+        [0, 'desc']
+    ],
+
+    pageLength: 10,
+
+    responsive: true
 });
 
 $('#searchBtn').click(function(){
@@ -868,17 +513,41 @@ $(document).on(
 
         let id =
             $(this).data('id');
+        // Get filter dates
+        let from_date = $('#from_date').val();
+        let to_date   = $('#to_date').val();
 
         $.get(
             "{{ url('project-view') }}/"+id,
-
+            {
+                from_date: from_date,
+                to_date: to_date
+            },
             function(res){
+                
+               
 
-                $('#projectManager')
-                    .text(res.project_manager);
+                // If From Date is empty, use project start date
+                if (!from_date) {
+                    from_date = res.project.start_date
+                        ? res.project.start_date.substring(0, 10)
+                        : '';
+                }
+
+                // If To Date is empty, use today's date
+                if (!to_date) {
+                    let today = new Date();
+
+                    to_date =
+                        today.getFullYear() + '-' +
+                        String(today.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(today.getDate()).padStart(2, '0');
+                }
 
                 $('#teamLead')
                     .text(res.team_head);
+                $('#projectManager')
+                    .text(res.project_manager);
 
                 $('#estimatedHours')
                     .text(res.project.estimated_hours);
@@ -886,12 +555,30 @@ $(document).on(
                     .text(
                         res.project.project_name
                     );
+                $('#projectFromDate')
+                    .text(
+                        formatDate(
+                            from_date
+                        )
+                    );
+                $('#projectToDate')
+                    .text(
+                        formatDate(
+                            to_date
+                        )
+                    );
 
                 $('#projectStartDate')
                     .text(
                         formatDate(
                             res.project.start_date
                         )
+                    );
+                $('#projectTotalHrWorked')
+                    .text(
+                       
+                            res.worker_hr
+                       
                     );
 
                 $('#projectEndDate')
@@ -906,11 +593,7 @@ $(document).on(
                         res.project.status
                     );
 
-                $('#projectMembersCount')
-                    .text(
-                        res.members.length
-                    );
-
+               
                 $('#projectTechnology')
                     .text(
                         res.project.description ?? '-'
@@ -918,9 +601,17 @@ $(document).on(
 
                 let html = '';
 
+                let totalHours = 0;
+
                 $.each(
                     res.members,
-                    function(index,row){
+                    function(index, row) {
+
+                        let hoursWorked = parseFloat(row.hoursworked) || 0;
+                        let costPerHour = parseFloat(row.costperhour) || 0;
+                        let totalCost   = parseFloat(row.totalcost) || 0;
+
+                        totalHours += hoursWorked;
 
                         html += `
                             <tr>
@@ -930,11 +621,7 @@ $(document).on(
                                 </td>
 
                                 <td>
-                                    ${row.employee_id}
-                                </td>
-
-                                <td>
-                                    ${row.employee_name}
+                                    ${row.employee_id} / ${row.employee_name}
                                 </td>
 
                                 <td>
@@ -942,14 +629,19 @@ $(document).on(
                                 </td>
 
                                 <td>
-                                    ${row.designation}
+                                    ${row.role}
                                 </td>
 
                                 <td>
-                                    ${row.role}
+                                    ${hoursWorked} Hrs
                                 </td>
+
                                 <td>
-                                    ${row.type}
+                                    ${costPerHour.toFixed(2)}
+                                </td>
+
+                                <td>
+                                    ${totalCost.toFixed(2)}
                                 </td>
 
                             </tr>
@@ -957,8 +649,17 @@ $(document).on(
                     }
                 );
 
-                $('#projectMembersBody')
-                    .html(html);
+                $('#projectMembersBody').html(html);
+
+                // Total hours
+                $('#projectTotalHours').text(
+                    totalHours + ' Hrs'
+                );
+
+                // Grand total
+                $('#projectGrandTotal').text(
+                    (parseFloat(res.totalcost) || 0).toFixed(2)
+                );
 
                 let moduleHtml = '';
 
@@ -1225,18 +926,18 @@ $(document).on(
 
 $('#exportBtn').click(function(){
 
-    let year = $('#year').val();
+    let from_date = $('#from_date').val();
 
-    let month = $('#month').val();
+    let to_date = $('#to_date').val();
 
     let status = $('#status').val();
     let project_manager_id = $('#project_manager_id').val();
     let team_head_id = $('#team_head_id').val();
 
     let url =
-        "{{ route('project.export') }}" +
-        '?year=' + year +
-        '&month=' + month +
+        "{{ route('project-costs.export') }}" +
+        '?from_date=' + from_date +
+        '&to_date=' + to_date +
         '&project_manager_id=' + project_manager_id +
         '&team_head_id=' + team_head_id +
         '&status=' + status;
