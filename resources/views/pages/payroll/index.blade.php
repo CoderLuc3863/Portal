@@ -246,6 +246,58 @@
 <script>
     var payrollFields = [
 
+        'employee_id',
+        'employee_name',
+
+        'team',
+        // 'department',
+        'billing_unit',
+        'gender',
+        // 'level',
+
+        'net_payment',
+        'basic',
+        'other_allowance',
+        'performance_bonus',
+        'project_allowance',
+        'special_allowance',
+        'total_earnings',
+
+        'professional_tax',
+        'pf',
+        'income_tax',
+        'lwf',
+        'salary_deductions',
+        'esi',
+        'total_deduction',
+
+        'net_salary',
+
+        'days_in_month',
+        'present_days',
+        'daily_rate',
+
+        'advance',
+        'recovery',
+        'balance',
+
+        'project_bonus_days',
+        'project_days_available',
+
+        'wfh',
+
+        'per_day_deduction',
+        'total_deduction_2',
+
+        // 'nft_wib',
+
+        'ifsc_code',
+        'bank_account_number',
+        'bank'
+
+    ];
+    var payrollFieldsOld = [
+
     'employee_id',
     'employee_name',
     'team',

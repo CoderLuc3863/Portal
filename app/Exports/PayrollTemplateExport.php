@@ -12,6 +12,106 @@ class PayrollTemplateExport implements FromCollection, WithHeadings
     {
         return Employee::where('status', 1)
             ->select(
+                'emp_id',
+                'name',
+                'ifsc',
+                'account_no',
+                'bank_name'
+            )
+            ->get()
+            ->map(function ($employee) {
+
+                return [
+                    $employee->emp_id,          // SrNo
+                    $employee->name,            // Name
+                    '',                         // Team
+                    '',                         // Department
+                    '',                         // Billing Unit
+                    '',                         // Gender
+                    '',                         // Level
+                    '',                         // Net Payment
+                    '',                         // Basic
+                    '',                         // Other Allowance
+                    '',                         // Perfomance Bonus
+                    '',                         // Project Allowance
+                    '',                         // Special Allowance
+                    '',                         // Total Earnings
+                    '',                         // Professional Tax
+                    '',                         // PF
+                    '',                         // Income Tax
+                    '',                         // LWF
+                    '',                         // Salary Deductions
+                    '',                         // ESI
+                    '',                         // Total Deduction
+                    '',                         // Net Salary
+                    '',                         // Days in Month
+                    '',                         // Present Days
+                    '',                         // Daily Rate
+                    '',                         // Net Payment
+                    '',                         // Advance
+                    '',                         // Rec0very1
+                    '',                         // Balance
+                    '',                         // Project Bonus/Days
+                    '',                         // Project Days Available
+                    '',                         // WFH
+                    '',                         // Per day deduction
+                    '',                         // Total deduction
+                    '',                         // NFT/WIB
+                    $employee->ifsc,            // IFSC Code
+                    $employee->account_no,      // Bank Account Number
+                    $employee->bank_name,       // Bank
+                ];
+            });
+    }
+
+    public function headings(): array
+    {
+        return [
+            'SrNo',
+            'Name',
+            'Team',
+            'Department',
+            'Billing Unit',
+            'Gender',
+            'Level',
+            'Net Payment',
+            'Basic',
+            'Other Allowance',
+            'Perfomance Bonus',
+            'Project Allowance',
+            'Special Allowance',
+            'Total Earnings',
+            'Professional Tax',
+            'PF',
+            'Income Tax',
+            'LWF',
+            'Salary Deductions',
+            'ESI',
+            'Total Deduction',
+            'Net Salary',
+            'Days in Month',
+            'Present Days',
+            'Daily Rate',
+            'Net Payment',
+            'Advance',
+            'Rec0very1',
+            'Balance',
+            'Project Bonus/Days',
+            'Project Days Available',
+            'WFH',
+            'Per day deduction',
+            'Total deduction',
+            'NFT/WIB',
+            'IFSC Code',
+            'Bank Account Number',
+            'Bank',
+        ];
+    }
+ 
+    public function collectionold()
+    {
+        return Employee::where('status', 1)
+            ->select(
                 'emp_id as employee_id',
                 'name as employee_name',
                 'ifsc',
@@ -22,10 +122,8 @@ class PayrollTemplateExport implements FromCollection, WithHeadings
             ->map(function ($employee) {
 
                 return [
-
                     $employee->employee_id,
                     $employee->employee_name,
-
                     '', // Team
                     '', // Billing Unit
                     '', // Gender
@@ -68,7 +166,7 @@ class PayrollTemplateExport implements FromCollection, WithHeadings
             });
     }
 
-    public function headings(): array
+    public function headingsOLD(): array
     {
         return [
 
@@ -111,7 +209,7 @@ class PayrollTemplateExport implements FromCollection, WithHeadings
             'IFSC Code',
             'Bank Account Number',
             'Bank',
-
         ];
     }
+
 }
